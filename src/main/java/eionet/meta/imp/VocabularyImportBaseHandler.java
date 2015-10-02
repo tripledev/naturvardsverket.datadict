@@ -423,7 +423,7 @@ public abstract class VocabularyImportBaseHandler {
             conceptIds.add(vc.getId());
         }
         try{
-            this.vocabularyService.deleteVocabularyFolders(conceptIds, true);
+            this.vocabularyService.deleteVocabularyConcepts(conceptIds);
         } catch ( ServiceException se ){
             LOGGER.debug("Failed to remove vocabulary concepts from the database, as required by the Vocabulary Import procedure", se);
         }

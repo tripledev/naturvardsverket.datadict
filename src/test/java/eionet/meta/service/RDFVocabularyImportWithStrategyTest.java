@@ -76,19 +76,21 @@ public class RDFVocabularyImportWithStrategyTest extends VocabularyImportService
 //        // get vocabulary folder
 //        VocabularyFolder vocabularyFolder = vocabularyService.getVocabularyFolder(TEST_VALID_VOCABULARY_ID);
 //
+//        // get initial values of concepts with attributes
+//        List<VocabularyConcept> concepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
+//
 //        // get reader for RDF file
 //        Reader reader = getReaderFromResource("rdf_import/rdf_import_strategy_test_1.rdf");
+//        
 //        // import RDF into database
 //        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.REMOVE);
 //        Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 //
-//        // get initial values of concepts with attributes
-//        List<VocabularyConcept> concepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
 //        List<VocabularyConcept> updatedConcepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
 //        
 //        Assert.assertThat("Only two concepts remain in the vocabulary", updatedConcepts.size(), CoreMatchers.is(2) );
 //        
-        //TODO: How to handle the case where the removed concepts are predicate targets through vocabulary_concept_element?
+////        TODO: How to handle the case where the removed concepts are predicate targets through vocabulary_concept_element?
 //    }
     
     @Test
