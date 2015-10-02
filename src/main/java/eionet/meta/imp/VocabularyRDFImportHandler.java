@@ -559,18 +559,21 @@ public class VocabularyRDFImportHandler extends VocabularyImportBaseHandler impl
                 }
             }
             // 2. do it for untouched concepts
-            for (VocabularyConcept concept : this.concepts) {
-                boolean conceptUpdated = false;
-                for (String key : this.predicateUpdatesAtConcepts.keySet()) {
-                    List<DataElement> conceptElements =
-                            getDataElementValuesByName(this.identifierOfPredicate.get(key), concept.getElementAttributes());
-                    if (conceptElements != null && conceptElements.size() > 0) {
-                        concept.getElementAttributes().remove(conceptElements);
-                        conceptUpdated = true;
+            // eka: only when the strategy for managing missing concepts is NOT set to Maintain/Ignore!
+            if ( !MissingConceptsStrategy.MAINTAIN_IGNORE.equals(missingConceptsStrategy) ){
+                for (VocabularyConcept concept : this.concepts) {
+                    boolean conceptUpdated = false;
+                    for (String key : this.predicateUpdatesAtConcepts.keySet()) {
+                        List<DataElement> conceptElements =
+                                getDataElementValuesByName(this.identifierOfPredicate.get(key), concept.getElementAttributes());
+                        if (conceptElements != null && conceptElements.size() > 0) {
+                            concept.getElementAttributes().remove(conceptElements);
+                            conceptUpdated = true;
+                        }
                     }
-                }
-                if (conceptUpdated) {
-                    this.toBeUpdatedConcepts.add(concept);
+                    if (conceptUpdated) {
+                        this.toBeUpdatedConcepts.add(concept);
+                    }
                 }
             }
         }
@@ -581,9 +584,8 @@ public class VocabularyRDFImportHandler extends VocabularyImportBaseHandler impl
                 removeConcepts( this.concepts );
                 break;
             }
-            case UPDATE_TO_INVALID: case UPDATE_TO_DEPRECATED: case UPDATE_TO_DEPRECATED_RETIRED: case UPDATE_TO_DEPRECATED_SUPERSEDED:{
+            case SET_STATUS_INVALID: case SET_STATUS_DEPRECATED: case SET_STATUS_DEPRECATED_RETIRED: case SET_STATUS_DEPRECATED_SUPERSEDED:{
                 updateConceptStatus( this.concepts, missingConceptsStrategy.getStatus() );
-                this.toBeUpdatedConcepts.addAll(this.concepts);
                 break;
             }
             default:{

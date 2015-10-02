@@ -29,6 +29,7 @@ import eionet.meta.dao.domain.VocabularySet;
 import eionet.meta.dao.domain.VocabularyType;
 import eionet.meta.service.data.VocabularyFilter;
 import eionet.meta.service.data.VocabularyResult;
+import eionet.util.Pair;
 import eionet.util.Triple;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -930,6 +931,30 @@ public class VocabularyFolderDAOImpl extends GeneralDAOImpl implements IVocabula
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return Integer.parseInt( rs.getString("RELATED_CONCEPT_ID") );
+            }
+        });
+        return result;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Pair<Integer,Integer>> getVocabularyConceptRelationshipsByTargetConcept( int relatedVocabularyConceptId ){
+        StringBuilder sql = new StringBuilder("select distinct vce.VOCABULARY_CONCEPT_ID as vocabulary_concept, vce.DATAELEM_ID as relationship ");
+                                   sql.append("from VOCABULARY_CONCEPT_ELEMENT vce ");
+                                   sql.append("where vce.RELATED_CONCEPT_ID = :ID ");
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ID", relatedVocabularyConceptId );
+        
+        List<Pair<Integer,Integer>> result = getNamedParameterJdbcTemplate().query(sql.toString(), params, new RowMapper<Pair<Integer,Integer>>() {
+            @Override
+            public Pair<Integer,Integer> mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String vocabularyConceptID = rs.getString("vocabulary_concept");
+                String relationshipID = rs.getString("relationship");
+                
+                Pair<Integer,Integer> pair = new Pair<Integer,Integer>( Integer.parseInt(vocabularyConceptID), Integer.parseInt(relationshipID) );
+                return pair;
             }
         });
         return result;

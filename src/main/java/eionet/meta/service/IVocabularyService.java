@@ -23,6 +23,7 @@ package eionet.meta.service;
 
 import eionet.meta.dao.domain.*;
 import eionet.meta.service.data.*;
+import eionet.util.Pair;
 import eionet.util.Triple;
 
 import java.util.List;
@@ -608,4 +609,13 @@ public interface IVocabularyService {
      *             if operation fails
      */
     List<VocabularyFolder> getRecentlyReleasedVocabularyFolders(int limit) throws ServiceException;
+
+    /**
+     * Returns a List of Pairs of Vocabulary Concept and Data Element which complete the relationship predicate between the returned Vocabulary Concept and the Given Vocabulary Concept.
+     * Please note that the given vocabulary concept is the target/right part of the relationship/predicate.
+     * 
+     * @param relatedVocabularyId
+     * @return 
+     */
+    List<Pair<VocabularyConcept,DataElement>> getVocabularyConceptRelationshipsByTargetConcept( int relatedVocabularyId );
 }

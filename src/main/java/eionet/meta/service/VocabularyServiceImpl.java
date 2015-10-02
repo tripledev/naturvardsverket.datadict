@@ -63,6 +63,7 @@ import eionet.meta.dao.domain.SiteCodeStatus;
 import eionet.meta.dao.domain.StandardGenericStatus;
 import eionet.meta.dao.domain.VocabularyConcept;
 import eionet.meta.dao.domain.VocabularyFolder;
+import eionet.util.Pair;
 import eionet.util.Props;
 import eionet.util.PropsIF;
 import eionet.util.Triple;
@@ -1429,4 +1430,24 @@ public class VocabularyServiceImpl implements IVocabularyService {
             throw new ServiceException(e.getMessage());
         }
     } // end of method getRecentlyReleasedVocabularyFolders
+    
+     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Pair<VocabularyConcept,DataElement>> getVocabularyConceptRelationshipsByTargetConcept( int relatedVocabularyId ){
+        List<Pair<VocabularyConcept,DataElement>> relationships = new ArrayList<Pair<VocabularyConcept,DataElement>>();
+        
+        List<Pair<Integer,Integer>> rels = vocabularyFolderDAO.getVocabularyConceptRelationshipsByTargetConcept(relatedVocabularyId);
+        for ( Pair<Integer,Integer> rel : rels ){
+            VocabularyConcept voc = vocabularyConceptDAO.getVocabularyConcept(rel.getLeft());
+            DataElement de = dataElementDAO.getDataElement(rel.getRight());
+            
+            if ( voc != null && de != null ){
+                Pair<VocabularyConcept,DataElement> pair = new Pair<VocabularyConcept,DataElement>(voc, de);
+                relationships.add(pair);
+            }
+        }
+        return relationships;
+    }
 }

@@ -28,6 +28,7 @@ import eionet.meta.dao.domain.VocabularyFolder;
 import eionet.meta.dao.domain.VocabularySet;
 import eionet.meta.service.data.VocabularyFilter;
 import eionet.meta.service.data.VocabularyResult;
+import eionet.util.Pair;
 import eionet.util.Triple;
 
 /**
@@ -253,6 +254,7 @@ public interface IVocabularyFolderDAO {
     List<VocabularyFolder> getRecentlyReleasedVocabularyFolders(int limit);
 
     /**
+<<<<<<< HEAD
      * Returns a VocabularySet object
      * @param vocabularyID
      *          the vocabulary ID
@@ -279,4 +281,14 @@ public interface IVocabularyFolderDAO {
      * @return 
      */
     List<Integer> getRelatedVocabularyConcepts( int vocabularyConceptID, int relationshipElementID, int relatedVocabularyID );
+
+    /**
+     * Returns a List of Pairs of Vocabulary Concept IDs and Data Element IDs which complete the relationship predicate between the returned Vocabulary Concept and the Given Vocabulary Concept.
+     * Please note that the given vocabulary concept is the target/right part of the relationship/predicate.
+     * 
+     * @param relatedVocabularyConceptId
+     * @return list of Pair with Vocabulary Concept ID and DataElement ID
+     */
+    List<Pair<Integer,Integer>> getVocabularyConceptRelationshipsByTargetConcept( int relatedVocabularyConceptId );
+
 }

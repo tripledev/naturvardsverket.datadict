@@ -420,7 +420,22 @@ public abstract class VocabularyImportBaseHandler {
         }
         List<Integer> conceptIds = new ArrayList<Integer>();
         for (VocabularyConcept vc : concepts) {
-            conceptIds.add(vc.getId());
+            int id = vc.getId();
+            //TODO: What if the concept to be removed in the target of a predicate?
+            //We need to find all predicates/ relationships where the right part/related vocabulary concept is the concept we are about to remove.
+            //EKA: do not remove, rather set status to DEPRECATED
+            List<Pair<VocabularyConcept,DataElement>> relationships = this.vocabularyService.getVocabularyConceptRelationshipsByTargetConcept(id);
+            if ( relationships.size() > 0 ){
+                try {
+                    vc.setStatus(StandardGenericStatus.DEPRECATED);
+                    this.vocabularyService.updateVocabularyConcept(vc);
+                    this.toBeUpdatedConcepts.add(vc);
+                } catch ( ServiceException se ){
+                    LOGGER.debug("Failed to update the status of the concept identified by "+vc.getIdentifier()+" to 'DEPRECATED'.", se);
+                }
+                continue;
+            }            
+            conceptIds.add( id );
         }
         try{
             this.vocabularyService.deleteVocabularyConcepts(conceptIds);
@@ -441,6 +456,9 @@ public abstract class VocabularyImportBaseHandler {
             vc.setStatus(status);
             try{
                 this.vocabularyService.updateVocabularyConcept(vc);
+                
+                this.toBeUpdatedConcepts.add(vc);
+                
             } catch ( ServiceException se ){
                 LOGGER.debug("Failed to update the status of the concept identified by "+vc.getIdentifier()+" to '"+status+"'.", se);
             }
