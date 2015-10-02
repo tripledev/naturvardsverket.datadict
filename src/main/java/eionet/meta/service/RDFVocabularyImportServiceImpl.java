@@ -45,6 +45,7 @@ import eionet.meta.dao.domain.VocabularyFolder;
 import eionet.meta.imp.VocabularyRDFImportHandler;
 import eionet.util.Props;
 import eionet.util.PropsIF;
+import eionet.web.action.MissingConceptsStrategy;
 
 /**
  * Service implementation to import RDF into a Vocabulary Folder.
@@ -70,7 +71,7 @@ public class RDFVocabularyImportServiceImpl extends VocabularyImportServiceBaseI
     @Override
     @Transactional(rollbackFor = ServiceException.class)
     public List<String> importRdfIntoVocabulary(Reader contents, final VocabularyFolder vocabularyFolder,
-            boolean purgeVocabularyData, boolean purgePredicateBasis) throws ServiceException {
+            boolean purgeVocabularyData, boolean purgePredicateBasis, MissingConceptsStrategy strategy) throws ServiceException {
         long start = System.currentTimeMillis();
         this.logMessages = new ArrayList<String>();
 
@@ -141,7 +142,7 @@ public class RDFVocabularyImportServiceImpl extends VocabularyImportServiceBaseI
         RDFParser parser = new RDFXMLParser();
         VocabularyRDFImportHandler rdfHandler =
                 new VocabularyRDFImportHandler(folderCtxRoot, concepts, elemToId, boundElementsByNS, boundURIs,
-                        purgePredicateBasis, Props.getProperty(PropsIF.DD_WORKING_LANGUAGE_KEY), DD_NAME_SPACE);
+                        purgePredicateBasis, strategy, Props.getProperty(PropsIF.DD_WORKING_LANGUAGE_KEY), DD_NAME_SPACE);
         parser.setRDFHandler(rdfHandler);
         // parser.setStopAtFirstError(false);
         ParserConfig config = parser.getParserConfig();
@@ -175,8 +176,11 @@ public class RDFVocabularyImportServiceImpl extends VocabularyImportServiceBaseI
             parser.parse(contents, folderCtxRoot);
             this.logMessages.addAll(rdfHandler.getLogMessages());
             this.logMessages.add("Number of (uploaded) RDF File errors received from RDF Parser: " + errorLogMessages.size());
+            
+            //Imports new concepts or updates existing ones according to the imported concepts and the user preferences for purging
             importIntoDb(vocabularyFolder.getId(), rdfHandler.getToBeUpdatedConcepts(), new ArrayList<DataElement>(),
                     rdfHandler.getElementsRelatedToNotCreatedConcepts());
+            
         } catch (Exception e) {
             // all exceptions should cause rollback operation
             e.printStackTrace();

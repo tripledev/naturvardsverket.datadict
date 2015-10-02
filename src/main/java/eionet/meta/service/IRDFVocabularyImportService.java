@@ -21,6 +21,7 @@
 package eionet.meta.service;
 
 import eionet.meta.dao.domain.VocabularyFolder;
+import eionet.web.action.MissingConceptsStrategy;
 
 import java.io.Reader;
 import java.util.List;
@@ -38,10 +39,11 @@ public interface IRDFVocabularyImportService {
      * @param vocabularyFolder    Vocabulary folder under bulk edit mode
      * @param purgeVocabularyData Purge all vocabulary concepts of folder
      * @param purgePredicateBasis Purge bound elements per predicate basis
+     * @param strategy            Strategy to follow for concepts missing in the imported file
      * @return List of log messages
      * @throws ServiceException Error if input is not valid
      */
     List<String> importRdfIntoVocabulary(Reader contents, VocabularyFolder vocabularyFolder, boolean purgeVocabularyData,
-            boolean purgePredicateBasis) throws ServiceException;
+            boolean purgePredicateBasis, MissingConceptsStrategy strategy) throws ServiceException;
 
 } // end of interface IRDFVocabularyImportService

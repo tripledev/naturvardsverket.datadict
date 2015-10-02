@@ -291,7 +291,11 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
     /**
      * Rdf purge option.
      */
-    private int rdfPurgeOption;
+    private PurgeOption rdfPurgeOption;
+    /**
+     * Rdf import missing concepts strategy
+     */
+    private MissingConceptsStrategy missingConceptsStrategy;
     /**
      * Language for search.
      */
@@ -403,7 +407,7 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
         folderChoice = FOLDER_CHOICE_EXISTING;
 
         boundElements = vocabularyService.getVocabularyDataElements(vocabularyFolder.getId());
-        setRdfPurgeOption(1);
+        setRdfPurgeOption( PurgeOption.DONT_PURGE );
 
         return new ForwardResolution(EDIT_VOCABULARY_FOLDER_JSP);
     }
@@ -1278,10 +1282,11 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
 
             LOGGER.debug("Starting RDF import operation");
             Reader rdfFileReader = new InputStreamReader(this.uploadedFileToImport.getInputStream(), CharEncoding.UTF_8);
-            // TODO use enum instead for rdf purge option
+            
             List<String> systemMessages =
                     this.vocabularyRdfImportService.importRdfIntoVocabulary(rdfFileReader, vocabularyFolder,
-                            this.rdfPurgeOption == 3, this.rdfPurgeOption == 2);
+                            PurgeOption.PURGE_VOCABULARY_DATA.equals( this.rdfPurgeOption ), PurgeOption.PURGE_PER_PREDICATE.equals( this.rdfPurgeOption ),
+                            this.missingConceptsStrategy);
             for (String systemMessage : systemMessages) {
                 addSystemMessage(systemMessage);
                 LOGGER.info(systemMessage);
@@ -1734,14 +1739,22 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
         this.purgeBoundElements = purgeBoundElements;
     }
 
-    public void setRdfPurgeOption(int rdfPurgeOption) {
+    public void setRdfPurgeOption(PurgeOption rdfPurgeOption) {
         this.rdfPurgeOption = rdfPurgeOption;
     }
 
-    public int getRdfPurgeOption() {
+    public PurgeOption getRdfPurgeOption() {
         return rdfPurgeOption;
     }
 
+    public MissingConceptsStrategy getMissingConceptsStrategy() {
+        return missingConceptsStrategy;
+    }
+
+    public void setMissingConceptsStrategy(MissingConceptsStrategy missingConceptsStrategy) {
+        this.missingConceptsStrategy = missingConceptsStrategy;
+    }
+    
     public void setLang(String lang) {
         this.lang = lang;
     }

@@ -47,6 +47,7 @@ import java.util.Set;
 
 import eionet.util.Util;
 import eionet.meta.exports.VocabularyOutputHelper;
+import eionet.web.action.MissingConceptsStrategy;
 import net.sourceforge.stripes.util.StringUtil;
 
 /**
@@ -170,6 +171,10 @@ public class VocabularyRDFImportHandler extends VocabularyImportBaseHandler impl
      */
     private boolean createNewDataElementsForPredicates = false;
     /**
+     * MissingConceptsStrategy to indicate how to handle concepts not included in the imported file
+     */
+    private final MissingConceptsStrategy missingConceptsStrategy;
+    /**
      * This set includes predicates which are not bound to vocabulary.
      */
     private Set<String> notBoundPredicates = null;
@@ -217,6 +222,7 @@ public class VocabularyRDFImportHandler extends VocabularyImportBaseHandler impl
      *            rdf namespaces for bound elements
      * @param workingLanguage
      *            working language, only first two letters are used
+     * @param strategy
      * @param createNewDataElementsForPredicates
      *            create new data elements for seen predicates
      * @param ddNamespace
@@ -226,10 +232,11 @@ public class VocabularyRDFImportHandler extends VocabularyImportBaseHandler impl
      */
     public VocabularyRDFImportHandler(String folderContextRoot, List<VocabularyConcept> concepts,
             Map<String, Integer> boundElementsToIds, Map<String, List<String>> boundElements, Map<String, String> boundURIs,
-            boolean createNewDataElementsForPredicates, String workingLanguage, String ddNamespace) throws ServiceException {
+            boolean createNewDataElementsForPredicates, MissingConceptsStrategy strategy, String workingLanguage, String ddNamespace) throws ServiceException {
         super(folderContextRoot, concepts, boundElementsToIds);
         this.boundElements = boundElements;
         this.createNewDataElementsForPredicates = createNewDataElementsForPredicates;
+        this.missingConceptsStrategy = strategy;
         this.boundURIs = boundURIs;
         this.attributePositions = new HashMap<String, Map<String, Integer>>();
         this.predicateUpdatesAtConcepts = new HashMap<String, Set<Integer>>();
@@ -567,7 +574,22 @@ public class VocabularyRDFImportHandler extends VocabularyImportBaseHandler impl
                 }
             }
         }
-
+        // Manages the concepts which already exist in the database, but are not included in the import, according to user preferences for setting their status
+        // by eka
+        switch (missingConceptsStrategy){
+            case REMOVE:{
+                removeConcepts( this.concepts );
+                break;
+            }
+            case UPDATE_TO_INVALID: case UPDATE_TO_DEPRECATED: case UPDATE_TO_DEPRECATED_RETIRED: case UPDATE_TO_DEPRECATED_SUPERSEDED:{
+                updateConceptStatus( this.concepts, missingConceptsStrategy.getStatus() );
+                break;
+            }
+            default:{
+                //Leave as is, ignore
+                break;
+            }
+        }
         // check for null label containing concepts
         List<String> conceptsWithNullLabels = processNewlyCreatedConceptsForNullCheck();
         // process unseen concepts for related elements

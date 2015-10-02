@@ -26,8 +26,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +45,7 @@ import eionet.meta.dao.domain.StandardGenericStatus;
 import eionet.meta.dao.domain.VocabularyConcept;
 import eionet.meta.dao.domain.VocabularyFolder;
 import eionet.meta.imp.VocabularyImportBaseHandler;
+import eionet.web.action.MissingConceptsStrategy;
 
 /**
  * JUnit integration test with Unitils for RDF Vocabulary Import Service.
@@ -73,7 +72,10 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
 
     /**
      * {@inheritDoc}
+     * @return 
+     * @throws java.lang.Exception
      */
+    @Override
     protected Reader getReaderFromResource(String resourceLoc) throws Exception {
         InputStream is = getClass().getClassLoader().getResourceAsStream(resourceLoc);
         InputStreamReader reader = new InputStreamReader(is);
@@ -100,7 +102,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_1.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually update initial values of concepts for comparison
@@ -162,7 +164,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_2.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually update initial values of concepts for comparison
@@ -283,7 +285,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_3.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually create values of new concept for comparison
@@ -365,7 +367,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_3.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually create values of new concept for comparison
@@ -448,7 +450,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_2.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually update initial values of concepts for comparison
@@ -588,7 +590,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_4.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually create values of new concept for comparison
@@ -656,7 +658,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_5.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, true);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, true, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // get updated values of concepts with attributes
@@ -721,7 +723,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_6.rdf");
 
         // import RDF into database
-        List<String> logMessages = vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false);
+        List<String> logMessages = vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually update initial values of concepts for comparison
@@ -777,7 +779,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_7.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually update initial values of concepts for comparison
@@ -838,7 +840,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_9.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // get updated values of concepts with attributes
@@ -895,7 +897,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("csv_import/csv_import_test_1.csv");
         try {
             // import CSV into database
-            vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, true);
+            vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, true, MissingConceptsStrategy.IGNORE);
             Assert.fail("Exception is not received");
         } catch (ServiceException e) {
             Assert.assertEquals("Exception Message is not correct", "Vocabulary does not have a valid base URI", e.getMessage());
@@ -918,7 +920,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = new StringReader("<rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"/>");
 
         // import RDF into database
-        List<String> logMessages = vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false);
+        List<String> logMessages = vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // Nothing seen, nothing updated, no error generated
@@ -948,7 +950,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_10.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // query updated concept
@@ -996,7 +998,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_11.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
 
         // manually create values of new concept for comparison
@@ -1105,7 +1107,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_12.rdf");
 
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false, MissingConceptsStrategy.IGNORE);
 
         vocabularyFolder = vocabularyService.getVocabularyWithConcepts("reftest", "reftest");
 
@@ -1149,7 +1151,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         // get reader for RDF file
         Reader reader = getReaderFromResource("rdf_import/rdf_import_test_13.rdf");
         // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false);
+        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, true, false, MissingConceptsStrategy.IGNORE);
         Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
         
         

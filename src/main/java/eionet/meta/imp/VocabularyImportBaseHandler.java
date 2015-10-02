@@ -35,6 +35,7 @@ import eionet.meta.service.data.VocabularyFilter;
 import eionet.meta.service.data.VocabularyResult;
 import eionet.util.Pair;
 import eionet.util.Util;
+import eionet.web.action.MissingConceptsStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -46,6 +47,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 /**
  * Base abstract class used for vocabulary import handling from different sources (RDF or CSV).
@@ -55,6 +57,7 @@ import java.util.Set;
 @Configurable
 public abstract class VocabularyImportBaseHandler {
 
+    private static final Logger LOGGER = Logger.getLogger(VocabularyImportBaseHandler.class);
     /**
      * log message list.
      */
@@ -407,5 +410,42 @@ public abstract class VocabularyImportBaseHandler {
             List<List<DataElement>> dataElements) {
         return VocabularyOutputHelper.getDataElementValuesByNameAndLang(elemName, lang, dataElements);
     } // end of method getDataElementValuesByNameAndLang
+
+    /**
+     * Removes concepts from database
+     * @param concepts 
+     */
+    void removeConcepts(List<VocabularyConcept> concepts) {
+        if ( concepts == null || concepts.isEmpty() ){
+            return;
+        }
+        List<Integer> conceptIds = new ArrayList<Integer>();
+        for (VocabularyConcept vc : concepts) {
+            conceptIds.add(vc.getId());
+        }
+        try{
+            this.vocabularyService.deleteVocabularyFolders(conceptIds, true);
+        } catch ( ServiceException se ){
+            LOGGER.debug("Failed to remove vocabulary concepts from the database, as required by the Vocabulary Import procedure", se);
+        }
+    }
+    /**
+     * Updates the status of the given concepts to the value indicated by the given parameter
+     * @param concepts
+     * @param status 
+     */
+    void updateConceptStatus(List<VocabularyConcept> concepts, StandardGenericStatus status ){
+        if ( concepts == null || concepts.isEmpty() ){
+            return;
+        }
+        for (VocabularyConcept vc : concepts) {
+            vc.setStatus(status);
+            try{
+                this.vocabularyService.updateVocabularyConcept(vc);
+            } catch ( ServiceException se ){
+                LOGGER.debug("Failed to update the status of the concept identified by "+vc.getIdentifier()+" to '"+status+"'.", se);
+            }
+        }
+    }
 
 } // end of class VocabularyImportBaseHandler

@@ -68,12 +68,9 @@ public abstract class VocabularyImportServiceTestBase extends UnitilsJUnit4 {
 
     /**
      * Get a reader from given RDF file location. If there is a BOM character, skip it.
-     *
-     * @param resourceLoc
-     *            RDF file location
+     * @param resourceLoc RDF file location
      * @return Reader object (BOM skipped)
-     * @throws Exception
-     *             if an error occurs
+     * @throws Exception if an error occurs
      */
     protected abstract Reader getReaderFromResource(String resourceLoc) throws Exception;
 
