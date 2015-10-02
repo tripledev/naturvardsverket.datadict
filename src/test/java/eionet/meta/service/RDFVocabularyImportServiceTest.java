@@ -461,8 +461,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
         vc8.setDefinition("rdf_test_concept_def_1_updated");
 
         List<List<DataElement>> dataElements = vc8.getElementAttributes();
-        List<DataElement> elems = null;
-        elems = VocabularyImportBaseHandler.getDataElementValuesByNameAndLang("skos:prefLabel", "bg", dataElements);
+        List<DataElement> elems = VocabularyImportBaseHandler.getDataElementValuesByNameAndLang("skos:prefLabel", "bg", dataElements);
         DataElement element = findDataElemByAttrValue(elems, "bg2_rdf_test_concept_1");
         element.setAttributeValue("bg2_rdf_test_concept_1_updated");
 
@@ -548,7 +547,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
 
         // get updated values of concepts with attributes
         List<VocabularyConcept> updatedConcepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
-        Assert.assertEquals("Updated Concepts does not include 2 vocabulary concepts", updatedConcepts.size(), 2);
+        Assert.assertEquals("Updated Concepts does not include 2 vocabulary concepts", 2, updatedConcepts.size());
 
         VocabularyConcept vc8Updated = findVocabularyConceptByIdentifier(updatedConcepts, vc8.getIdentifier());
         VocabularyConcept vc10Updated = findVocabularyConceptByIdentifier(updatedConcepts, vc10.getIdentifier());
@@ -1080,7 +1079,7 @@ public class RDFVocabularyImportServiceTest extends VocabularyImportServiceTestB
 
         // get updated values of concepts with attributes
         List<VocabularyConcept> updatedConcepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
-        Assert.assertEquals("Updated Concepts does not include 4 vocabulary concepts", updatedConcepts.size(), 4);
+        Assert.assertEquals("Updated Concepts does not include 4 vocabulary concepts", 4, updatedConcepts.size());
 
         // last object should be the inserted one, so use it is id to set (all other fields are updated manually)
         vc11.setId(updatedConcepts.get(3).getId());

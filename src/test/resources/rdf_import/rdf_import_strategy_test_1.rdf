@@ -26,14 +26,13 @@
       <skos:broader rdf:resource="http://127.0.0.1:8080/datadict/vocabulary/rdf_header_vs/rdf_header_vocab/rdf_test_concept_2"/>
    </skos:Concept>
 
-   <!-- Concept NEW 999 -->
-   <skos:Concept rdf:about="http://127.0.0.1:8080/datadict/vocabulary/rdf_header_vs/rdf_header_vocab/rdf_test_concept_999">
-      <skos:prefLabel>rdf_test_concept_label_999_new</skos:prefLabel>
+   <!-- NEW! Concept 4 -->
+   <skos:Concept rdf:about="http://127.0.0.1:8080/datadict/vocabulary/rdf_header_vs/rdf_header_vocab/rdf_test_concept_4">
+      <skos:prefLabel>rdf_test_concept_label_4</skos:prefLabel>
+      <skos:definition>rdf_test_concept_def_4</skos:definition>
       <skos:inScheme rdf:resource="http://127.0.0.1:8080/datadict/vocabulary/rdf_header_vs/rdf_header_vocab/"/>
-      <skos:prefLabel xml:lang="el">el_rdf_test_concept_label_999_new</skos:prefLabel>
-      <skos:prefLabel xml:lang="el">el2_rdf_test_concept_label_999_new</skos:prefLabel>
-      <skos:prefLabel xml:lang="en">en_rdf_test_concept_label_999_new</skos:prefLabel>
-      <skos:prefLabel xml:lang="se">se_rdf_test_concept_label_999_new</skos:prefLabel>
-      <skos:broader rdf:resource="http://127.0.0.1:8080/datadict/vocabulary/rdf_header_vs/rdf_header_vocab/rdf_test_concept_999"/>
+      <skos:prefLabel xml:lang="bg">bg_rdf_test_concept_4</skos:prefLabel>
+      <skos:prefLabel xml:lang="bg">bg2_rdf_test_concept_4</skos:prefLabel>      
+      <skos:definition xml:lang="de">de_rdf_test_concept_4</skos:definition>      
    </skos:Concept>
 </rdf:RDF>

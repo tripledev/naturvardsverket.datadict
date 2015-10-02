@@ -24,6 +24,7 @@ package eionet.meta.service;
 import eionet.meta.dao.domain.DataElement;
 import eionet.meta.dao.domain.VocabularyConcept;
 import eionet.meta.dao.domain.VocabularyFolder;
+import eionet.meta.service.data.VocabularyConceptFilter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
@@ -87,6 +88,23 @@ public abstract class VocabularyImportServiceTestBase extends UnitilsJUnit4 {
     protected List<VocabularyConcept> getVocabularyConceptsWithAttributes(VocabularyFolder vf) throws Exception {
         return vocabularyService.getValidConceptsWithAttributes(vf.getId());
     }// end of method getVocabularyConceptsWithAttributes
+    
+    /**
+     * Utility code to make test code more readable. Returns vocabulary concepts of a specific vocabulary regardless of status call to
+     * vocabularyService
+     *
+     * @param vf
+     *            VocabularyFolder which holds concepts
+     * @return List of vocabulary concepts of given folder
+     * @throws Exception
+     *             if an error occurs
+     */
+    protected List<VocabularyConcept> getAllVocabularyConcepts(VocabularyFolder vf) throws Exception {
+        VocabularyConceptFilter filter = new VocabularyConceptFilter();
+        int vid = vf.getId();
+        filter.setVocabularyFolderId( vid );
+        return vocabularyService.searchVocabularyConcepts( filter ).getList();
+    }// end of method getAllVocabularyConcepts
 
     /**
      * Utility code to make test code more readable. Finds DataElement with given name in a list

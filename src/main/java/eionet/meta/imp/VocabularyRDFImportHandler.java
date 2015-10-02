@@ -583,6 +583,7 @@ public class VocabularyRDFImportHandler extends VocabularyImportBaseHandler impl
             }
             case UPDATE_TO_INVALID: case UPDATE_TO_DEPRECATED: case UPDATE_TO_DEPRECATED_RETIRED: case UPDATE_TO_DEPRECATED_SUPERSEDED:{
                 updateConceptStatus( this.concepts, missingConceptsStrategy.getStatus() );
+                this.toBeUpdatedConcepts.addAll(this.concepts);
                 break;
             }
             default:{
