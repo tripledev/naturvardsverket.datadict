@@ -1435,10 +1435,10 @@ public class VocabularyServiceImpl implements IVocabularyService {
      * {@inheritDoc}
      */
     @Override
-    public List<Pair<VocabularyConcept,DataElement>> getVocabularyConceptRelationshipsByTargetConcept( int relatedVocabularyId ){
+    public List<Pair<VocabularyConcept,DataElement>> getVocabularyConceptRelationshipsByTargetConcept( int relatedVocabularyConceptId ){
         List<Pair<VocabularyConcept,DataElement>> relationships = new ArrayList<Pair<VocabularyConcept,DataElement>>();
         
-        List<Pair<Integer,Integer>> rels = vocabularyFolderDAO.getVocabularyConceptRelationshipsByTargetConcept(relatedVocabularyId);
+        List<Pair<Integer,Integer>> rels = vocabularyFolderDAO.getVocabularyConceptRelationshipsByTargetConcept(relatedVocabularyConceptId);
         for ( Pair<Integer,Integer> rel : rels ){
             VocabularyConcept voc = vocabularyConceptDAO.getVocabularyConcept(rel.getLeft());
             DataElement de = dataElementDAO.getDataElement(rel.getRight());

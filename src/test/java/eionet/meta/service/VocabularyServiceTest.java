@@ -33,6 +33,7 @@ import eionet.meta.service.data.VocabularyConceptFilter;
 import eionet.meta.service.data.VocabularyConceptResult;
 import eionet.meta.service.data.VocabularyFilter;
 import eionet.meta.service.data.VocabularyResult;
+import eionet.util.Pair;
 import eionet.util.Props;
 import eionet.util.PropsIF;
 import eionet.util.Triple;
@@ -51,6 +52,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 
 import static org.junit.Assert.*;
 
@@ -1164,9 +1167,15 @@ public class VocabularyServiceTest extends UnitilsJUnit4 {
         
         assertTrue(4 == result.getFullListSize());
         
+    }
+    
+    @Test
+    public void testVocabularyConceptRelationshipsByTargetConcept(){
+        int relatedVocabularyConceptId = 4;
+        List<Pair<VocabularyConcept,DataElement>> rel = this.vocabularyService.getVocabularyConceptRelationshipsByTargetConcept(relatedVocabularyConceptId);
         
-        
-        
-        
+        Assert.assertThat("The is one vocabulary relationship where the target is vocabulary concept with ID 4", rel.size(), CoreMatchers.is(1) );
+        Assert.assertThat("The related vocabulary concept is identified by ID 5", rel.get(0).getLeft().getId(), CoreMatchers.is(5) );
+        Assert.assertThat("The data element which describes the relationship is identified by ID 5", rel.get(0).getRight().getId(), CoreMatchers.is(5) );
     }
 }

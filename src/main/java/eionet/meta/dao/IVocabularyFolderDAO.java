@@ -254,7 +254,6 @@ public interface IVocabularyFolderDAO {
     List<VocabularyFolder> getRecentlyReleasedVocabularyFolders(int limit);
 
     /**
-<<<<<<< HEAD
      * Returns a VocabularySet object
      * @param vocabularyID
      *          the vocabulary ID

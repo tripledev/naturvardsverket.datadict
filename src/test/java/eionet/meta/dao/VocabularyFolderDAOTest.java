@@ -1,12 +1,17 @@
 package eionet.meta.dao;
 
-import eionet.meta.dao.domain.VocabularySet;
+
+import eionet.meta.dao.domain.DataElement;
+import eionet.meta.dao.domain.VocabularyConcept;
 import eionet.meta.service.DBUnitHelper;
+import eionet.util.Pair;
 import eionet.util.Triple;
 import java.util.List;
 import org.hamcrest.CoreMatchers;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -23,9 +28,13 @@ public class VocabularyFolderDAOTest extends UnitilsJUnit4 {
     private IVocabularyFolderDAO vocabularyFolderDAO;
 
     
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void setUp() throws Exception {
         DBUnitHelper.loadData("seed-vocabulary-relationships.xml");
+    }
+    @AfterClass
+    public static void cleanUp() throws Exception {
+        DBUnitHelper.deleteData("seed-vocabulary-relationships.xml");
     }
     
     @Test
@@ -55,5 +64,19 @@ public class VocabularyFolderDAOTest extends UnitilsJUnit4 {
         
         Assert.assertThat("1st concept is with ID 8",  concepts.get(0), CoreMatchers.is(8) );
         Assert.assertThat("2nd concept is with ID 10", concepts.get(1), CoreMatchers.is(10) );
+    }
+    
+    @Test
+    public void testVocabularyConceptRelationshipsByTargetConcept(){
+        int relatedVocabularyConceptId = 5;
+        List<Pair<Integer,Integer>> rel = this.vocabularyFolderDAO.getVocabularyConceptRelationshipsByTargetConcept(relatedVocabularyConceptId);
+        
+        Assert.assertThat("The are two vocabulary relationships where the target is vocabulary concept with ID 5", rel.size(), CoreMatchers.is(2) );
+        
+        Assert.assertThat("1st: The related vocabulary concept is identified by ID 1", rel.get(0).getLeft(), CoreMatchers.is(1) );
+        Assert.assertThat("1st: The data element which describes the relationship is identified by ID 6", rel.get(0).getRight(), CoreMatchers.is(6) );
+        
+        Assert.assertThat("2nd: The related vocabulary concept is identified by ID 3", rel.get(1).getLeft(), CoreMatchers.is(3) );
+        Assert.assertThat("2nd: The data element which describes the relationship is identified by ID 5", rel.get(1).getRight(), CoreMatchers.is(5) );
     }
 }
