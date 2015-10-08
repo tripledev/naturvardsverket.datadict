@@ -24,6 +24,7 @@ package eionet.meta.dao;
 import java.util.List;
 
 import eionet.meta.dao.domain.DataElement;
+import eionet.meta.dao.domain.VocabularyConcept;
 import eionet.meta.dao.domain.VocabularyFolder;
 import eionet.meta.dao.domain.VocabularySet;
 import eionet.meta.service.data.VocabularyFilter;
@@ -204,6 +205,14 @@ public interface IVocabularyFolderDAO {
      *            list of vocabulary IDs to be checked and handled
      */
     void updateRelatedConceptValueToUri(List<Integer> vocabularyIds);
+    
+    /**
+     * Updates concept element values for the given related concept. Element value is updated
+     * with base URI + concept identifier, while related concept element is removed
+     * 
+     * @param relatedVocabularyConcept the related concept which is to be removed
+     */
+    void updateRelatedConceptValueToUri(VocabularyConcept relatedVocabularyConcept);
 
     /**
      * Updates a vocabulary concept element to set related concept id field to a new value and and element value field to NULL.

@@ -618,4 +618,12 @@ public interface IVocabularyService {
      * @return 
      */
     List<Pair<VocabularyConcept,DataElement>> getVocabularyConceptRelationshipsByTargetConcept( int relatedVocabularyConceptId );
+    
+    /**
+     * Updates concept element values for the given related concepts. Element value is updated
+     * with base URI + concept identifier, while the specific related concept element is removed
+     * 
+     * @param relatedConcepts 
+     */
+    void updateRelatedVocabularyConceptValueToUri( List<VocabularyConcept> relatedConcepts );
 }

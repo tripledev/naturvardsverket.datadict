@@ -21,6 +21,7 @@
 package eionet.meta.service;
 
 import eionet.meta.dao.domain.DataElement;
+import eionet.meta.dao.domain.StandardGenericStatus;
 import eionet.meta.dao.domain.VocabularyConcept;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 /**
  * Base abstract class used for vocabulary import from different sources (RDF or CSV).
@@ -35,6 +37,8 @@ import java.util.Set;
  * @author enver
  */
 public abstract class VocabularyImportServiceBaseImpl {
+    
+    protected static final Logger LOGGER = Logger.getLogger(VocabularyImportServiceBaseImpl.class);
     /**
      * Vocabulary service.
      */
@@ -132,5 +136,36 @@ public abstract class VocabularyImportServiceBaseImpl {
         this.vocabularyService.fixRelatedReferenceElements(vocabularyId, vocabularyConcepts);
 
     } // end of method importIntoDb
+    
+    /**
+     * Removes concepts from database
+     * @param concepts 
+     */
+    void removeConcepts(List<VocabularyConcept> concepts) {
+        if ( concepts == null || concepts.isEmpty() ){
+            return;
+        }
+        List<Integer> conceptIds = new ArrayList<Integer>();
+        List<VocabularyConcept> conceptsWithBindings = new ArrayList<VocabularyConcept>();
+        
+        for (VocabularyConcept vc : concepts) {
+            int id = vc.getId();
+            //Check if the concept to be removed is the target of a predicate. In this case do as #17687
+            //Update VOCABULARY_CONCEPT_ELEMENT table, set RELATED_CONCEPT_ID to NULL and set ELEMENT_VALUE to related vocabulary concept URI (voc URI + Identifier)
+            if ( this.vocabularyService.getVocabularyConceptRelationshipsByTargetConcept(id).size() > 0 ){
+                conceptsWithBindings.add( vc );
+            }            
+            conceptIds.add( id );
+        }
+        try{
+            if ( !conceptsWithBindings.isEmpty() ){
+                this.vocabularyService.updateRelatedVocabularyConceptValueToUri(conceptsWithBindings);
+            }
+            this.vocabularyService.deleteVocabularyConcepts(conceptIds);
+        } catch ( ServiceException se ){
+            LOGGER.debug("Failed to remove vocabulary concepts from the database, as required by the Vocabulary Import procedure", se);
+        }
+    }
+
 
 } // end of abstract class VocabularyImportServiceBaseImpl

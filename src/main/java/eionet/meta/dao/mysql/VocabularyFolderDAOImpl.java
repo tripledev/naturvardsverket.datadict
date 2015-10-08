@@ -24,6 +24,7 @@ package eionet.meta.dao.mysql;
 import eionet.meta.dao.IVocabularyFolderDAO;
 import eionet.meta.dao.domain.DataElement;
 import eionet.meta.dao.domain.RegStatus;
+import eionet.meta.dao.domain.VocabularyConcept;
 import eionet.meta.dao.domain.VocabularyFolder;
 import eionet.meta.dao.domain.VocabularySet;
 import eionet.meta.dao.domain.VocabularyType;
@@ -751,6 +752,22 @@ public class VocabularyFolderDAOImpl extends GeneralDAOImpl implements IVocabula
 
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("vocabularyIds", vocabularyIds);
+
+        getNamedParameterJdbcTemplate().update(sql, parameters);
+    }
+    
+    /**
+     * {@inheritDoc} 
+     */
+    @Override
+    public void updateRelatedConceptValueToUri(VocabularyConcept relatedVocabularyConcept) {
+        String sql =
+                "UPDATE VOCABULARY_CONCEPT_ELEMENT ce, VOCABULARY v, VOCABULARY_CONCEPT c "
+                        + "SET ce.ELEMENT_VALUE = concat(v.BASE_URI, c.IDENTIFIER), ce.RELATED_CONCEPT_ID = null "
+                        + "WHERE ce.RELATED_CONCEPT_ID = c.VOCABULARY_CONCEPT_ID AND ce.RELATED_CONCEPT_ID = :relatedConceptId ";
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("relatedConceptId", relatedVocabularyConcept.getId() );
 
         getNamedParameterJdbcTemplate().update(sql, parameters);
     }

@@ -1450,4 +1450,13 @@ public class VocabularyServiceImpl implements IVocabularyService {
         }
         return relationships;
     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateRelatedVocabularyConceptValueToUri( List<VocabularyConcept> relatedConcepts ){
+        for ( VocabularyConcept relatedConcept : relatedConcepts ){
+            vocabularyFolderDAO.updateRelatedConceptValueToUri(relatedConcept);
+        }
+    }
 }

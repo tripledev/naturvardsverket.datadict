@@ -46,6 +46,9 @@ import eionet.meta.imp.VocabularyRDFImportHandler;
 import eionet.util.Props;
 import eionet.util.PropsIF;
 import eionet.web.action.MissingConceptsStrategy;
+import java.io.IOException;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFParseException;
 
 /**
  * Service implementation to import RDF into a Vocabulary Folder.
@@ -71,7 +74,7 @@ public class RDFVocabularyImportServiceImpl extends VocabularyImportServiceBaseI
     @Override
     @Transactional(rollbackFor = ServiceException.class)
     public List<String> importRdfIntoVocabulary(Reader contents, final VocabularyFolder vocabularyFolder,
-            boolean purgeVocabularyData, boolean purgePredicateBasis, MissingConceptsStrategy strategy) throws ServiceException {
+            boolean purgeVocabularyData, boolean purgePredicateBasis, MissingConceptsStrategy missingConceptsStrategy) throws ServiceException {
         long start = System.currentTimeMillis();
         this.logMessages = new ArrayList<String>();
 
@@ -142,7 +145,7 @@ public class RDFVocabularyImportServiceImpl extends VocabularyImportServiceBaseI
         RDFParser parser = new RDFXMLParser();
         VocabularyRDFImportHandler rdfHandler =
                 new VocabularyRDFImportHandler(folderCtxRoot, concepts, elemToId, boundElementsByNS, boundURIs,
-                        purgePredicateBasis, strategy, Props.getProperty(PropsIF.DD_WORKING_LANGUAGE_KEY), DD_NAME_SPACE);
+                        purgePredicateBasis, missingConceptsStrategy, Props.getProperty(PropsIF.DD_WORKING_LANGUAGE_KEY), DD_NAME_SPACE);
         parser.setRDFHandler(rdfHandler);
         // parser.setStopAtFirstError(false);
         ParserConfig config = parser.getParserConfig();
@@ -180,11 +183,24 @@ public class RDFVocabularyImportServiceImpl extends VocabularyImportServiceBaseI
             //Imports new concepts or updates existing ones according to the imported concepts and the user preferences for purging
             importIntoDb(vocabularyFolder.getId(), rdfHandler.getToBeUpdatedConcepts(), new ArrayList<DataElement>(),
                     rdfHandler.getElementsRelatedToNotCreatedConcepts());
-            
-        } catch (Exception e) {
+          
+            List<VocabularyConcept> toBeRemovedConcepts = rdfHandler.getToBeRemovedConcepts();
+            if ( toBeRemovedConcepts != null && !toBeRemovedConcepts.isEmpty() ){
+                removeConcepts( toBeRemovedConcepts );
+            }
+        }
+        // all exceptions should cause rollback operation
+        catch (RDFParseException rdfPE ){
+            LOGGER.error("Problem while parsing RDF (RDFParseException)", rdfPE );
+            throw new ServiceException(rdfPE.getMessage());
+        } catch (RDFHandlerException rdfHE ){
+            LOGGER.error("Problem while parsing RDF (RDFHandlerException)", rdfHE );
             // all exceptions should cause rollback operation
-            e.printStackTrace();
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(rdfHE.getMessage());
+        }  catch (IOException ioe){
+            LOGGER.error("Problem while parsing RDF (IOException)", ioe );
+            // all exceptions should cause rollback operation
+            throw new ServiceException(ioe.getMessage());
         }
 
         this.logMessages.add("RDF imported to database.");

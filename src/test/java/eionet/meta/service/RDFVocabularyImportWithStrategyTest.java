@@ -72,56 +72,6 @@ public class RDFVocabularyImportWithStrategyTest extends VocabularyImportService
     
     @Test
     @Rollback    
-    public void remove() throws Exception{
-        // get vocabulary folder
-        VocabularyFolder vocabularyFolder = vocabularyService.getVocabularyFolder(6);
-
-        // get initial values of concepts with attributes
-        List<VocabularyConcept> concepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
-
-        // get reader for RDF file
-        Reader reader = getReaderFromResource("rdf_import/rdf_import_strategy_test_2.rdf");
-        
-        // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.REMOVE);
-        Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
-
-        List<VocabularyConcept> updatedConcepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
-        
-        Assert.assertThat("Previous vocabulary concepts were removed.", updatedConcepts.size(), CoreMatchers.is( 1 ) );
-        
-        VocabularyConcept vcNew = findVocabularyConceptByIdentifier(updatedConcepts, "rdf_test_concept_4");
-        Assert.assertNotNull("The Vocabulary only contains the new concept", vcNew);
-    }
-    
-    @Test
-    @Rollback    
-    public void removeWhereConceptsArePredicateTargets() throws Exception{
-        // get vocabulary folder
-        VocabularyFolder vocabularyFolder = vocabularyService.getVocabularyFolder(TEST_VALID_VOCABULARY_ID);
-
-        // get initial values of concepts with attributes
-        List<VocabularyConcept> concepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
-
-        // get reader for RDF file
-        Reader reader = getReaderFromResource("rdf_import/rdf_import_strategy_test_1.rdf");
-        
-        // import RDF into database
-        vocabularyImportService.importRdfIntoVocabulary(reader, vocabularyFolder, false, false, MissingConceptsStrategy.REMOVE);
-        Assert.assertFalse("Transaction rolled back (unexpected)", transactionManager.getTransaction(null).isRollbackOnly());
-
-        List<VocabularyConcept> updatedConcepts = getVocabularyConceptsWithAttributes(vocabularyFolder);
-        
-        Assert.assertThat("No vocabulary concept was removed, despite the Purge option, since concepts to be removed participate in vocabulary relationships", updatedConcepts.size(), CoreMatchers.is( concepts.size()+1 ) );
-        
-        VocabularyConcept vc9 = findVocabularyConceptByIdentifier(updatedConcepts, "rdf_test_concept_2");
-        Assert.assertThat("However the status of the missing concepts is updated to 'DEPRECATED'.\n VC with ID 9", vc9.getStatus(), CoreMatchers.is( StandardGenericStatus.DEPRECATED ) );
-        VocabularyConcept vc10 = findVocabularyConceptByIdentifier(updatedConcepts, "rdf_test_concept_3");
-        Assert.assertThat("VC with ID 10", vc10.getStatus(), CoreMatchers.is( StandardGenericStatus.DEPRECATED ) );
-    }
-    
-    @Test
-    @Rollback    
     public void _a_invalidNoPurge() throws Exception{
         // get vocabulary folder
         VocabularyFolder vocabularyFolder = vocabularyService.getVocabularyFolder(TEST_VALID_VOCABULARY_ID);

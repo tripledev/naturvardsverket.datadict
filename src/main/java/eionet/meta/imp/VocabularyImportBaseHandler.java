@@ -73,6 +73,11 @@ public abstract class VocabularyImportBaseHandler {
     protected List<VocabularyConcept> toBeUpdatedConcepts = null;
 
     /**
+     * Vocabulary Concepts to be deleted.
+     */
+    protected List<VocabularyConcept> toBeRemovedConcepts = null;
+    
+    /**
      * Not seen concepts yet.
      */
     protected List<VocabularyConcept> notSeenConceptsYet = null;
@@ -148,6 +153,10 @@ public abstract class VocabularyImportBaseHandler {
 
     public List<VocabularyConcept> getToBeUpdatedConcepts() {
         return toBeUpdatedConcepts;
+    }
+    
+    public List<VocabularyConcept> getToBeRemovedConcepts() {
+        return toBeRemovedConcepts;
     }
 
     public List<DataElement> getNewBoundElement() {
@@ -419,25 +428,21 @@ public abstract class VocabularyImportBaseHandler {
             return;
         }
         List<Integer> conceptIds = new ArrayList<Integer>();
+        List<VocabularyConcept> conceptsWithBindings = new ArrayList<VocabularyConcept>();
+        
         for (VocabularyConcept vc : concepts) {
             int id = vc.getId();
-            //TODO: What if the concept to be removed in the target of a predicate?
-            //We need to find all predicates/ relationships where the right part/related vocabulary concept is the concept we are about to remove.
-            //EKA: do not remove, rather set status to DEPRECATED
-            List<Pair<VocabularyConcept,DataElement>> relationships = this.vocabularyService.getVocabularyConceptRelationshipsByTargetConcept(id);
-            if ( relationships.size() > 0 ){
-                try {
-                    vc.setStatus(StandardGenericStatus.DEPRECATED);
-                    this.vocabularyService.updateVocabularyConcept(vc);
-                    this.toBeUpdatedConcepts.add(vc);
-                } catch ( ServiceException se ){
-                    LOGGER.debug("Failed to update the status of the concept identified by "+vc.getIdentifier()+" to 'DEPRECATED'.", se);
-                }
-                continue;
+            //Check if the concept to be removed is the target of a predicate. In this case do as #17687
+            //Update VOCABULARY_CONCEPT_ELEMENT table, set RELATED_CONCEPT_ID to NULL and set ELEMENT_VALUE to related vocabulary concept URI (voc URI + Identifier)
+            if ( this.vocabularyService.getVocabularyConceptRelationshipsByTargetConcept(id).size() > 0 ){
+                conceptsWithBindings.add( vc );
             }            
             conceptIds.add( id );
         }
         try{
+            if ( conceptsWithBindings.size() > 0 ){
+                this.vocabularyService.updateRelatedVocabularyConceptValueToUri(conceptsWithBindings);
+            }
             this.vocabularyService.deleteVocabularyConcepts(conceptIds);
         } catch ( ServiceException se ){
             LOGGER.debug("Failed to remove vocabulary concepts from the database, as required by the Vocabulary Import procedure", se);

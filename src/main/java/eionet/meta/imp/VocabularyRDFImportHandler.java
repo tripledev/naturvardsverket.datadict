@@ -577,15 +577,20 @@ public class VocabularyRDFImportHandler extends VocabularyImportBaseHandler impl
                 }
             }
         }
-        // Manages the concepts which already exist in the database, but are not included in the import, according to user preferences for setting their status
-        // by eka
+        //Manage the concepts which already exist in the database, but are not included in the import, according to user preferences for setting their status
+        // by eka, Oct 2015
         switch (missingConceptsStrategy){
             case REMOVE:{
-                removeConcepts( this.concepts );
+                if ( this.toBeRemovedConcepts == null ){
+                    this.toBeRemovedConcepts = new ArrayList<VocabularyConcept>();
+                }
+                //Cannot perform removing right now, since update of concepts which happens on the VocabularyImportService, outside the scope of this handler, might create vocabulary relationships to the about to be removed concepts.
+                //So it is more accurate to store somewhere the list of concepts to be removed and perform the actual removal and update of the vocabulary relationships, in which they participate, at the very end.
+                this.toBeRemovedConcepts.addAll( concepts );
                 break;
             }
             case SET_STATUS_INVALID: case SET_STATUS_DEPRECATED: case SET_STATUS_DEPRECATED_RETIRED: case SET_STATUS_DEPRECATED_SUPERSEDED:{
-                updateConceptStatus( this.concepts, missingConceptsStrategy.getStatus() );
+                updateConceptStatus( concepts, missingConceptsStrategy.getStatus() );
                 break;
             }
             default:{
