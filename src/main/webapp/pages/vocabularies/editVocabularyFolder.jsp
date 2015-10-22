@@ -667,7 +667,7 @@
                     </div>
                 </div>
                     
-                <div id="missing-concepts-strategy" class="more-options" style="display:none">
+                <div id="missing-concepts-strategy" class="more-options">
                     <div class="subtitle">How to handle missing concepts?</div>
                     <div class="strategies">
                         <div class="strategy-ignore">
