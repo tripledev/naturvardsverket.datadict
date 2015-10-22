@@ -61,6 +61,21 @@
                     $('#uploadRDFDialog').dialog("close");
                     return true;
                 });
+                //F 27223
+                $("input[name=\"rdfPurgeOption\"]:radio").change( function( event ){
+                    var el = $(event.currentTarget);
+                    var value = el.attr("value");
+                    
+                    var showMoreOptions = (( value === "PURGE_PER_PREDICATE" || value === "DONT_PURGE" ) );
+                    
+                    var moreOptions = el.closest(".upload-dialog").find(".more-options");
+                    
+                    if ( showMoreOptions ){
+                        moreOptions.slideDown();
+                    } else {
+                        moreOptions.slideUp();
+                    }
+                });
 
                 $("#uploadRdf").click(function(){
                     $('input#uploadRdf').attr("disabled", true);
@@ -613,7 +628,7 @@
 	    </div>
 
 	    <%-- The upload RDF dialog. Hidden unless activated. --%>
-	    <div id="uploadRDFDialog" title="Upload RDF">
+	    <div id="uploadRDFDialog" class="upload-dialog" title="Upload RDF">
                 <stripes:form id="uploadRDFForm" beanclass="${actionBean.class.name}" method="post" action="/vocabulary/${actionBean.vocabularyFolder.folderName}/${actionBean.origIdentifier}/uploadRdf">
                     <stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
                     <stripes:param name="vocabularyFolder.id" value="${actionBean.vocabularyFolder.id}" />
@@ -631,29 +646,32 @@
                 </div>
 
                 <div>
-                    <stripes:radio id="rdfDontPurge" name="rdfPurgeOption" value="DONT_PURGE"/><label for="rdfDontPurge" class="question">Don't purge vocabulary data</label>
+                    <stripes:radio id="rdfDontPurge" name="rdfPurgeOption" value="DONT_PURGE"/>
+                    <label for="rdfDontPurge" class="question">Don't purge vocabulary data</label>
                     <div class="elaboration">
                         In this case, existing vocabulary information will be updated with information from imported concepts.
                     </div>
                 </div>
                 <div>
-                    <stripes:radio id="rdfPurgePerPredicate" name="rdfPurgeOption" value="PURGE_PER_PREDICATE"/><label for="rdfPurgePerPredicate" class="question">Purge Per Predicate</label>
+                    <stripes:radio id="rdfPurgePerPredicate" name="rdfPurgeOption" value="PURGE_PER_PREDICATE"/>
+                    <label for="rdfPurgePerPredicate" class="question">Purge Per Predicate</label>
                     <div class="elaboration">
                         In this case, all existing concepts will be removed and the imported concepts will be added.
                     </div>
                 </div>
                 <div>
-                    <stripes:radio id="rdfPurgeVocabularyData" name="rdfPurgeOption" value="PURGE_VOCABULARY_DATA"/><label for="rdfPurgeVocabularyData" class="question">Purge All Vocabulary Data</label>
+                    <stripes:radio id="rdfPurgeVocabularyData" name="rdfPurgeOption" value="PURGE_VOCABULARY_DATA"/>
+                    <label for="rdfPurgeVocabularyData" class="question">Purge All Vocabulary Data</label>
                     <div class="elaboration">
                         In this case, predicates of existing concepts will be replaced with the imported predicates.
                     </div>
                 </div>
                     
-                <div class="missing-concepts-strategy">
+                <div id="missing-concepts-strategy" class="more-options" style="display:none">
                     <div class="subtitle">How to handle missing concepts?</div>
                     <div class="strategies">
                         <div class="strategy-ignore">
-                            <stripes:radio id="strategy-ignore" name="missingConceptsStrategy" value="IGNORE"/>
+                            <stripes:radio id="strategy-ignore" name="missingConceptsStrategy" value="MAINTAIN_IGNORE"/>
                             <label for="missingConceptsStrategy" class="question">Maintain as is, ignore</label>
                         </div>
                         <div class="strategy-remove">
@@ -661,19 +679,19 @@
                             <label for="missingConceptsStrategy" class="question">Remove</label>
                         </div>
                         <div class="strategy-status-invalid">
-                            <stripes:radio id="strategy-status-invalid" name="missingConceptsStrategy" value="UPDATE_TO_INVALID"/>
+                            <stripes:radio id="strategy-status-invalid" name="missingConceptsStrategy" value="SET_STATUS_INVALID"/>
                             <label for="missingConceptsStrategy" class="question">Maintain, but update status to "Invalid"</label>
                         </div>
                         <div class="strategy-status-deprecated">
-                            <stripes:radio id="strategy-status-deprecated" name="missingConceptsStrategy" value="UPDATE_TO_DEPRECATED"/>
+                            <stripes:radio id="strategy-status-deprecated" name="missingConceptsStrategy" value="SET_STATUS_DEPRECATED"/>
                             <label for="missingConceptsStrategy" class="question">Maintain, but update status to "Deprecated"</label>
                         </div>
                         <div class="strategy-status-deprecated-retired">
-                            <stripes:radio id="strategy-status-deprecated-retired" name="missingConceptsStrategy" value="UPDATE_TO_DEPRECATED_RETIRED"/>
+                            <stripes:radio id="strategy-status-deprecated-retired" name="missingConceptsStrategy" value="SET_STATUS_DEPRECATED_RETIRED"/>
                             <label for="missingConceptsStrategy" class="question">Maintain, but update status to "Deprecated-Retired"</label>
                         </div>
                         <div class="strategy-status-deprecated-superseded">
-                            <stripes:radio id="strategy-status-deprecated-superseded" name="missingConceptsStrategy" value="UPDATE_TO_DEPRECATED_SUPERSEDED"/>
+                            <stripes:radio id="strategy-status-deprecated-superseded" name="missingConceptsStrategy" value="SET_STATUS_DEPRECATED_SUPERSEDED"/>
                             <label for="missingConceptsStrategy" class="question">Maintain, but update status to "Deprecated-Superseded"</label>
                         </div>
                     </div>
