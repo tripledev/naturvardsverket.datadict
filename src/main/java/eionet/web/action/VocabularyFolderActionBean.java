@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +46,7 @@ import net.sourceforge.stripes.integration.spring.SpringBean;
 import net.sourceforge.stripes.validation.ValidationMethod;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
 
@@ -709,6 +711,38 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
         resolution.addParameter("vocabularyFolder.folderName", vocabularyFolder.getFolderName());
         resolution.addParameter("vocabularyFolder.identifier", vocabularyFolder.getIdentifier());
         resolution.addParameter("vocabularyFolder.workingCopy", vocabularyFolder.isWorkingCopy());
+        return resolution;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public Resolution saveConceptFieldsOrder() throws ServiceException {
+
+        LOGGER.debug("Entered saveConceptFieldsOrder() ...");
+
+        HttpServletRequest httpRequest = getContext().getRequest();
+        if (httpRequest != null) {
+            Map paramsMap = httpRequest.getParameterMap();
+            if (paramsMap != null && !paramsMap.isEmpty()) {
+                for (Object object : paramsMap.entrySet()) {
+                    Map.Entry entry = ( Map.Entry) object;
+                    String key = (String) entry.getKey();
+                    if (key.startsWith("pos_")) {
+                        String id = StringUtils.substringAfter(key, "pos_");
+                        String posValue = ArrayUtils.toString(entry.getValue());
+                        String oldPosValue = ArrayUtils.toString(httpRequest.getParameterValues("oldpos_" + id));
+                        System.out.println(key + " = " + posValue + ", oldpos = " + oldPosValue);
+                    }
+                }
+            }
+        }
+
+        RedirectResolution resolution = new RedirectResolution(VocabularyFolderActionBean.class, "edit");
+        resolution.addParameter("vocabularyFolder.folderName", vocabularyFolder.getFolderName());
+        resolution.addParameter("vocabularyFolder.identifier", vocabularyFolder.getIdentifier());
+        if (vocabularyFolder.isWorkingCopy()) {
+            resolution.addParameter("vocabularyFolder.workingCopy", vocabularyFolder.isWorkingCopy());
+        }
+        addSystemMessage("Concept fields display order saved!");
         return resolution;
     }
 
