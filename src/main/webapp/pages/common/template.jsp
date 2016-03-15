@@ -37,7 +37,7 @@
             <script type="text/javascript" src="<c:url value="/script.js"/>"></script>
             <stripes:layout-component name="head"/>
         </head>
-        <body>
+        <body onload="${bodyOnLoadHandler}">
             <div id="container">
                 <div id="toolribbon">
                     <div id="lefttools">

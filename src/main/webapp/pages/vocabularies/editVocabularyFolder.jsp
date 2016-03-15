@@ -2,29 +2,32 @@
 
 <%@ include file="/pages/common/taglibs.jsp"%>
 
-<stripes:layout-render name="/pages/common/template.jsp"
-    pageTitle="Edit vocabulary">
+<stripes:layout-render name="/pages/common/template.jsp" pageTitle="Edit vocabulary" bodyOnLoadHandler="start()">
 
     <stripes:layout-component name="head">
+
+        <script type="text/javascript" src="${pageContext.request.contextPath}/dynamic_table.js"></script>
+        <script type="text/javascript" src="${pageContext.request.contextPath}/modal_dialog.js"></script>
+
         <script type="text/javascript">
         // <![CDATA[
         ( function($) {
             $(document).ready(function() {
 
-            	$("#uploadCSVLink").click(function() {
+                $("#uploadCSVLink").click(function() {
                     $('#uploadCSVDialog').dialog('open');
                     return false;
                 });
 
-            	$("#purgeVocabularyData").click(function() {
-            		if ($('input#purgeVocabularyData').is(':checked')) {
-	                   alert("If you check this option all data will be deleted! If you are not sure about this, please uncheck it!");
-	                   $('input#purgeBoundElements').removeAttr("disabled");
-            		}
-            		else{
-            		   $('input#purgeBoundElements').attr("disabled", true);
-            		   $('input#purgeBoundElements').attr("checked", false);
-            		}
+                $("#purgeVocabularyData").click(function() {
+                    if ($('input#purgeVocabularyData').is(':checked')) {
+                       alert("If you check this option all data will be deleted! If you are not sure about this, please uncheck it!");
+                       $('input#purgeBoundElements').removeAttr("disabled");
+                    }
+                    else{
+                       $('input#purgeBoundElements').attr("disabled", true);
+                       $('input#purgeBoundElements').attr("checked", false);
+                    }
                     return true;
                 });
 
@@ -170,8 +173,29 @@
                 return true;
             }
         }
-
         // ]]>
+
+        </script>
+
+        <script type="text/javascript">
+
+	        //
+	        // Struff related to the changing of display order of concept fields.
+	        //
+
+	        function start() {
+	            tbl_obj=new dynamic_table("tbl");
+	        }
+	        function moveRowUp(){
+	            tbl_obj.moveup();
+	        }
+	        function moveRowDown(){
+	            tbl_obj.movedown();
+	        }
+	        function saveOrder(){
+                tbl_obj.insertNumbers("pos_");
+                alert('Done!');
+            }
 
         </script>
     </stripes:layout-component>
@@ -191,19 +215,19 @@
                     </stripes:link>
                 </li>
                 <c:if test="${actionBean.userWorkingCopy}">
-		          <li>
-		              <a href="#" id="addNewConceptLink">Add new concept</a>
-		          </li>
-		          <li>
-		              <a href="#" id="uploadCSVLink">Upload CSV</a>
-		          </li>
-		          <li>
-		              <a href="#" id="uploadRDFLink">Upload RDF</a>
-		          </li>
-		          <li>
+                  <li>
+                      <a href="#" id="addNewConceptLink">Add new concept</a>
+                  </li>
+                  <li>
+                      <a href="#" id="uploadCSVLink">Upload CSV</a>
+                  </li>
+                  <li>
+                      <a href="#" id="uploadRDFLink">Upload RDF</a>
+                  </li>
+                  <li>
                       <a href="#" id="fieldsOrderLink">Change fields order</a>
                   </li>
-		        </c:if>
+                </c:if>
                 <li>
                     <stripes:link beanclass="eionet.web.action.VocabularyFolderActionBean" event="undoCheckOut">
                         <stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
@@ -593,15 +617,15 @@
             </div>
         </c:forEach>
 
-	    <%-- The upload CSV dialog. Hidden unless activated. --%>
-	    <div id="uploadCSVDialog" title="Upload CSV">
-	        <stripes:form beanclass="${actionBean.class.name}" method="post">
-	        	<stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
+        <%-- The upload CSV dialog. Hidden unless activated. --%>
+        <div id="uploadCSVDialog" title="Upload CSV">
+            <stripes:form beanclass="${actionBean.class.name}" method="post">
+                <stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
                 <stripes:param name="vocabularyFolder.id" value="${actionBean.vocabularyFolder.id}" />
                 <stripes:param name="vocabularyFolder.identifier" value="${actionBean.vocabularyFolder.identifier}" />
                 <stripes:param name="vocabularyFolder.workingCopy" value="${actionBean.vocabularyFolder.workingCopy}" />
 
-	            <div class="note-msg">
+                <div class="note-msg">
                     CSV Import
                     <br><br>The CSV file should contain a header row for element names and data rows for concepts.
                     <br>It is strongly recommended to use an exported CSV file as a template for bulk editing. Columns and rows can be added to or deleted from the template file.
@@ -614,38 +638,38 @@
                         <li>If a concept with the same identifier already exists in the vocabulary it will be overwritten</li>
                         <li>"Purge Vocabulary" option deletes all the vocabulary concepts before import</li>
                     </ul>
-	            </div>
+                </div>
 
-				<div>
-					<stripes:checkbox id="purgeVocabularyData" name="purgeVocabularyData"/><label for="purgeVocabularyData" class="question">Purge Vocabulary Data</label>
-				</div>
-				<div>
-					<stripes:checkbox id="purgeBoundElements" name="purgeBoundElements" disabled="true"/><label for="purgeBoundElements" class="question">Purge Bound Elements</label>
-				</div>
-	            <stripes:file name="uploadedFileToImport" id="fileToUpload" size="40" accept="text/csv" title="Select a .csv file to import"/>
-	            <stripes:submit name="uploadCsv" value="Upload"/>
-	            <input type="button" id="closeUploadCSVDialog" value="Cancel"/>
+                <div>
+                    <stripes:checkbox id="purgeVocabularyData" name="purgeVocabularyData"/><label for="purgeVocabularyData" class="question">Purge Vocabulary Data</label>
+                </div>
+                <div>
+                    <stripes:checkbox id="purgeBoundElements" name="purgeBoundElements" disabled="true"/><label for="purgeBoundElements" class="question">Purge Bound Elements</label>
+                </div>
+                <stripes:file name="uploadedFileToImport" id="fileToUpload" size="40" accept="text/csv" title="Select a .csv file to import"/>
+                <stripes:submit name="uploadCsv" value="Upload"/>
+                <input type="button" id="closeUploadCSVDialog" value="Cancel"/>
 
-	        </stripes:form>
-	    </div>
+            </stripes:form>
+        </div>
 
-	    <%-- The upload RDF dialog. Hidden unless activated. --%>
-	    <div id="uploadRDFDialog" title="Upload RDF">
-	        <stripes:form id="uploadRDFForm" beanclass="${actionBean.class.name}" method="post" action="/vocabulary/${actionBean.vocabularyFolder.folderName}/${actionBean.origIdentifier}/uploadRdf">
-	        	<stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
+        <%-- The upload RDF dialog. Hidden unless activated. --%>
+        <div id="uploadRDFDialog" title="Upload RDF">
+            <stripes:form id="uploadRDFForm" beanclass="${actionBean.class.name}" method="post" action="/vocabulary/${actionBean.vocabularyFolder.folderName}/${actionBean.origIdentifier}/uploadRdf">
+                <stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
                 <stripes:param name="vocabularyFolder.id" value="${actionBean.vocabularyFolder.id}" />
                 <stripes:param name="vocabularyFolder.identifier" value="${actionBean.vocabularyFolder.identifier}" />
                 <stripes:param name="vocabularyFolder.workingCopy" value="${actionBean.vocabularyFolder.workingCopy}" />
                 <div class="note-msg">
-				    <strong>Note</strong>
-				       <ul>
-				          <li>With this operation, contents of RDF file will be imported into vocabulary folder.</li>
-				          <li>Only a working copy can be updated with a RDF file upload.</li>
+                    <strong>Note</strong>
+                       <ul>
+                          <li>With this operation, contents of RDF file will be imported into vocabulary folder.</li>
+                          <li>Only a working copy can be updated with a RDF file upload.</li>
                           <li>If user select "Purge Per Predicate" option. All seen predicates will be removed from vocabulary.</li>
                           <li>If user select "Purge All Vocabulary Data" option. All data will be removed from vocabulary.</li>
                           <li>Once import is successful, operation cannot be undone. If an error occurs during import, then all data will be rolled back.</li>
-				       </ul>
-				</div>
+                       </ul>
+                </div>
 
                 <div>
                     <stripes:radio id="rdfDontPurge" name="rdfPurgeOption" value="1"/><label for="rdfDontPurge" class="question">Don't purge vocabulary data</label>
@@ -657,13 +681,13 @@
                     <stripes:radio id="rdfPurgeVocabularyData" name="rdfPurgeOption" value="3"/><label for="rdfPurgeVocabularyData" class="question">Purge All Vocabulary Data</label>
                 </div>
 
-	            <stripes:file name="uploadedFileToImport" id="fileToUpload" size="40"  title="Select a .rdf file to import"/>
-	            <stripes:submit id="uploadRdf" name="uploadRdf" value="Upload"/>
-	            <input type="button" id="closeUploadRDFDialog" value="Cancel"/>
+                <stripes:file name="uploadedFileToImport" id="fileToUpload" size="40"  title="Select a .rdf file to import"/>
+                <stripes:submit id="uploadRdf" name="uploadRdf" value="Upload"/>
+                <input type="button" id="closeUploadRDFDialog" value="Cancel"/>
                 <img id="spinningImage" src="<%=request.getContextPath()%>/images/indicator.gif" alt="Importing..." style="display: none;"/>
 
-	        </stripes:form>
-	    </div>
+            </stripes:form>
+        </div>
 
         <%-- The dialog window for changing vocabulary concept fields display order. It is hidden unless activated. --%>
 
@@ -676,29 +700,64 @@
                 <stripes:param name="vocabularyFolder.identifier" value="${actionBean.vocabularyFolder.identifier}" />
                 <stripes:param name="vocabularyFolder.workingCopy" value="${actionBean.vocabularyFolder.workingCopy}" />
 
-                <div class="note-msg">
-                    <strong>Note</strong>
-                    <ul>
-                       <li>This is for changing concept fields display order!</li>
-                    </ul>
+                <p>
+                    Use the below table to change the display order of the vocabulary's concept fields!
+                </p>
+
+                <div style="float:left; padding-right:5px; vertical-align:middle;">
+                    <input type="button" value="&#8679;" onclick="moveRowUp()" title="Move selected row up."/><br/>
+                    <input type="button" value="&#8681;" onclick="moveRowDown()" title="Move selected row down."/>
                 </div>
 
-                <display:table name="${actionBean.conceptFieldsOrder}" id="orderElement">
+                <div>
+                    <table id="tbl" class="datatable" style="width:80%;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left;padding-right:10px">Field name</th>
+                                <th style="text-align:left;padding-right:10px">Field type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl_body">
+                            <c:forEach items="${actionBean.conceptFieldsOrder}" var="orderRow" varStatus="loopStatus">
+                                <tr id="tr${orderRow.id}" onclick="tbl_obj.selectRow(this);" style="${loopStatus.index % 2 != 0 ? 'background-color:#D3D3D3;' : ''}">
+                                    <td>
+                                        <c:choose>
+			                                <c:when test="${orderRow.property != null}">
+			                                    <c:out value="${orderRow.property.label}" />
+			                                </c:when>
+			                                <c:when test="${orderRow.boundElement != null}">
+			                                    <c:out value="${orderRow.boundElement.identifier}" />
+			                                </c:when>
+			                                <c:otherwise>
+			                                    <c:out value="--" />
+			                                </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>
+                                        <c:choose>
+			                                <c:when test="${orderRow.property != null}">
+			                                    <c:out value="property" />
+			                                </c:when>
+			                                <c:when test="${orderRow.boundElement != null}">
+			                                    <c:out value="bound element" />
+			                                </c:when>
+			                                <c:otherwise>
+			                                    <c:out value="--" />
+			                                </c:otherwise>
+                                        </c:choose>
+                                        <input type="hidden" name="oldpos_${orderRow.id}" value="${loopStatus.index + 1}"/>
+                                        <input type="hidden" name="pos_${orderRow.id}" value="${loopStatus.index + 1}"/>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
 
-		            <display:setProperty name="basic.msg.empty_list" value="No order elements found." />
-		            <display:setProperty name="paging.banner.item_name" value="order element" />
-		            <display:setProperty name="paging.banner.items_name" value="order elements" />
-
-		            <display:column title="Property">
-		                <c:out value="${orderElement.property == null ? 'null' : orderElement.property.label}" />
-		            </display:column>
-		            <display:column title="Bound element">
-		                <c:out value="${orderElement.boundElement == null ? 'null' : orderElement.boundElement.shortName}" />
-		            </display:column>
-
-		        </display:table>
-
-                <input type="button" id="closeFieldsOrderDialog" value="Cancel"/>
+                <div>
+                    <input type="button" id="saveFieldsOrder" value="Save order" onclick="saveOrder();"/>
+                    <input type="button" id="closeFieldsOrderDialog" value="Cancel"/>
+                </div>
 
             </stripes:form>
         </div>

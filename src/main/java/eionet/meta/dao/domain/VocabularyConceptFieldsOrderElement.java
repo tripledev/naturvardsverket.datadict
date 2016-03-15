@@ -46,6 +46,23 @@ public class VocabularyConceptFieldsOrderElement {
     }
 
     /**
+     *
+     * @return
+     */
+    public String getLabel() {
+        // In reality we don't expect both property and bound element to be null, but let's just be tolerant here to avoid any NPE.
+        return property != null ? property.getLabel() : (boundElement != null ? boundElement.getIdentifier() : null);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getId() {
+        return String.format("%s|%s", property == null ? "" : property.name(), boundElement == null ? "" : String.valueOf(boundElement.getId()));
+    }
+
+    /**
      * An enum representing a vocabulary concept property (as in {@link VocabularyConcept}) that can be part of vocabulary concept
      * fields display order.
      *
