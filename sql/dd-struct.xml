@@ -1854,4 +1854,53 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
       <dropColumn tableName="VOCABULARY_CONCEPT" columnName="CREATION_DATE"/>
   </changeSet>
 
+  <changeSet author="heinlja" id="2016-03-02-vocabulary-concept-fields-order-1">
+
+    <comment>Create a table for vocabulary fields display order.</comment>
+    <createTable tableName="VOCABULARY_CONCEPT_FIELDS_ORDER">
+        <column name="ID" type="INT UNSIGNED">
+            <constraints nullable="false" primaryKey="true"/>
+        </column>
+        <column name="VOCABULARY_ID" type="INT UNSIGNED">
+            <constraints nullable="false" primaryKey="false"/>
+        </column>
+        <column name="POSITION" type="INT(3) UNSIGNED" defaultValueNumeric="999">
+            <constraints nullable="false" primaryKey="false"/>
+        </column>
+        <column name="PROPERTY_NAME" type="VARCHAR(100)">
+            <constraints nullable="true"/>
+        </column>
+        <column name="BOUND_ELEM_ID" type="INT UNSIGNED">
+            <constraints nullable="true"/>
+        </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet author="heinlja" id="2016-03-02-vocabulary-concept-fields-order-2">
+    <sql splitStatements="false" stripComments="false">
+        <![CDATA[
+        CREATE TRIGGER VOCABULARY_CONCEPT_FIELDS_ORDER_BEFORE_INSERT BEFORE INSERT ON VOCABULARY_CONCEPT_FIELDS_ORDER
+        FOR EACH ROW
+        BEGIN
+            IF !(NEW.PROPERTY_NAME IS NULL XOR NEW.BOUND_ELEM_ID IS NULL) THEN
+                CALL either_property_name_or_bound_elem_id_must_be_null;
+            END IF;
+        END;
+        ]]>
+    </sql>
+  </changeSet>
+
+  <changeSet author="heinlja" id="2016-03-02-vocabulary-concept-fields-order-3">
+    <addAutoIncrement tableName="VOCABULARY_CONCEPT_FIELDS_ORDER" columnName="ID" columnDataType="INT"/>
+    <addForeignKeyConstraint constraintName="FK_VOC_CONCEPT_FIELDS_ORDER_VOC_ID"
+        baseTableName="VOCABULARY_CONCEPT_FIELDS_ORDER" baseColumnNames="VOCABULARY_ID"
+        referencedTableName="VOCABULARY" referencedColumnNames="VOCABULARY_ID"
+        onDelete="CASCADE" onUpdate="CASCADE" deferrable="false" initiallyDeferred="false" referencesUniqueColumn="false"/>
+
+    <addForeignKeyConstraint constraintName="FK_VOC_CONCEPT_FIELDS_ORDER_BOUND_ELEM_ID"
+        baseTableName="VOCABULARY_CONCEPT_FIELDS_ORDER" baseColumnNames="BOUND_ELEM_ID"
+        referencedTableName="DATAELEM" referencedColumnNames="DATAELEM_ID"
+        onDelete="CASCADE" onUpdate="CASCADE" deferrable="false" initiallyDeferred="false" referencesUniqueColumn="false"/>
+  </changeSet>
+
 </databaseChangeLog>

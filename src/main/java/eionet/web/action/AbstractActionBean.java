@@ -21,11 +21,10 @@
 
 package eionet.web.action;
 
-import eionet.meta.DDUser;
-import eionet.util.Props;
-import eionet.util.PropsIF;
-import eionet.util.SecurityUtil;
-import eionet.web.DDActionBeanContext;
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
 import net.sourceforge.stripes.action.ActionBean;
 import net.sourceforge.stripes.action.ActionBeanContext;
 import net.sourceforge.stripes.action.SimpleMessage;
@@ -34,11 +33,15 @@ import net.sourceforge.stripes.controller.StripesConstants;
 import net.sourceforge.stripes.validation.SimpleError;
 import nl.bitwalker.useragentutils.Browser;
 import nl.bitwalker.useragentutils.BrowserType;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
+import eionet.meta.DDUser;
+import eionet.util.Props;
+import eionet.util.PropsIF;
+import eionet.util.SecurityUtil;
+import eionet.web.DDActionBeanContext;
 
 /**
  * Root class for all DD ActionBeans.
@@ -303,4 +306,11 @@ public abstract class AbstractActionBean implements ActionBean {
         return isWebBrowser;
     }
 
+    /**
+     *
+     * @return
+     */
+    public String getBeanClassName() {
+        return getClass().getName();
+    }
 }

@@ -25,13 +25,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import eionet.meta.exports.VocabularyOutputHelper;
-import eionet.meta.exports.json.VocabularyJSONOutputHelper;
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ErrorResolution;
 import net.sourceforge.stripes.action.FileBean;
@@ -53,13 +54,17 @@ import eionet.meta.dao.domain.RdfNamespace;
 import eionet.meta.dao.domain.SimpleAttribute;
 import eionet.meta.dao.domain.StandardGenericStatus;
 import eionet.meta.dao.domain.VocabularyConcept;
+import eionet.meta.dao.domain.VocabularyConceptFieldsOrderElement;
 import eionet.meta.dao.domain.VocabularyFolder;
+import eionet.meta.exports.VocabularyOutputHelper;
+import eionet.meta.exports.json.VocabularyJSONOutputHelper;
 import eionet.meta.exports.rdf.InspireCodelistXmlWriter;
 import eionet.meta.exports.rdf.VocabularyXmlWriter;
 import eionet.meta.service.ICSVVocabularyImportService;
 import eionet.meta.service.IDataService;
 import eionet.meta.service.IRDFVocabularyImportService;
 import eionet.meta.service.ISiteCodeService;
+import eionet.meta.service.IVocabularyConceptFieldsOrderService;
 import eionet.meta.service.IVocabularyService;
 import eionet.meta.service.ServiceException;
 import eionet.meta.service.data.DataElementsFilter;
@@ -176,6 +181,10 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
     @SpringBean
     private IDataService dataService;
 
+    /** */
+    @SpringBean
+    private IVocabularyConceptFieldsOrderService conceptFieldsOrderService;
+
     /**
      * Vocabulary folder.
      */
@@ -262,6 +271,9 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
      * Bound data elements.
      */
     private List<DataElement> boundElements;
+
+    /** */
+    private List<VocabularyConceptFieldsOrderElement> conceptFieldsOrder;
 
     /**
      * Data element id.
@@ -1679,6 +1691,19 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
     public List<DataElement> getBoundElements() {
 
         return boundElements;
+    }
+
+    /**
+     * @return the conceptFieldsOrder
+     */
+    public List<VocabularyConceptFieldsOrderElement> getConceptFieldsOrder() {
+
+        if (conceptFieldsOrder == null && vocabularyFolder != null) {
+            int vocabularyId = vocabularyFolder.getId();
+            conceptFieldsOrder = conceptFieldsOrderService.getOrderElements(vocabularyId);
+        }
+
+        return conceptFieldsOrder;
     }
 
     /**

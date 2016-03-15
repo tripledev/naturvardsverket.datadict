@@ -72,6 +72,23 @@
                     return true;
                 });
 
+                $("#fieldsOrderLink").click(function() {
+                    $('#fieldsOrderDialog').dialog('open');
+                    return false;
+                });
+
+                $('#fieldsOrderDialog').dialog({
+                    autoOpen: false,
+                    width: 600,
+                    closeOnEscape: false,
+                    open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
+                });
+
+                $("#closeFieldsOrderDialog").click(function() {
+                    $('#fieldsOrderDialog').dialog("close");
+                    return true;
+                });
+
                 $(".folderChoice").click(function() {
                     handleFolderChoice();
                 });
@@ -174,16 +191,19 @@
                     </stripes:link>
                 </li>
                 <c:if test="${actionBean.userWorkingCopy}">
-          <li>
-              <a href="#" id="addNewConceptLink">Add new concept</a>
-          </li>
-          <li>
-              <a href="#" id="uploadCSVLink">Upload CSV</a>
-          </li>
-          <li>
-              <a href="#" id="uploadRDFLink">Upload RDF</a>
-          </li>
-        </c:if>
+		          <li>
+		              <a href="#" id="addNewConceptLink">Add new concept</a>
+		          </li>
+		          <li>
+		              <a href="#" id="uploadCSVLink">Upload CSV</a>
+		          </li>
+		          <li>
+		              <a href="#" id="uploadRDFLink">Upload RDF</a>
+		          </li>
+		          <li>
+                      <a href="#" id="fieldsOrderLink">Change fields order</a>
+                  </li>
+		        </c:if>
                 <li>
                     <stripes:link beanclass="eionet.web.action.VocabularyFolderActionBean" event="undoCheckOut">
                         <stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
@@ -644,6 +664,44 @@
 
 	        </stripes:form>
 	    </div>
+
+        <%-- The dialog window for changing vocabulary concept fields display order. It is hidden unless activated. --%>
+
+        <div id="fieldsOrderDialog" title="Change concept fields display order">
+
+            <stripes:form id="fieldsOrderForm" beanclass="${actionBean.class.name}" method="post" action="/vocabulary/${actionBean.vocabularyFolder.folderName}/${actionBean.origIdentifier}/saveConceptFieldsOrder">
+
+                <stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
+                <stripes:param name="vocabularyFolder.id" value="${actionBean.vocabularyFolder.id}" />
+                <stripes:param name="vocabularyFolder.identifier" value="${actionBean.vocabularyFolder.identifier}" />
+                <stripes:param name="vocabularyFolder.workingCopy" value="${actionBean.vocabularyFolder.workingCopy}" />
+
+                <div class="note-msg">
+                    <strong>Note</strong>
+                    <ul>
+                       <li>This is for changing concept fields display order!</li>
+                    </ul>
+                </div>
+
+                <display:table name="${actionBean.conceptFieldsOrder}" id="orderElement">
+
+		            <display:setProperty name="basic.msg.empty_list" value="No order elements found." />
+		            <display:setProperty name="paging.banner.item_name" value="order element" />
+		            <display:setProperty name="paging.banner.items_name" value="order elements" />
+
+		            <display:column title="Property">
+		                <c:out value="${orderElement.property == null ? 'null' : orderElement.property.label}" />
+		            </display:column>
+		            <display:column title="Bound element">
+		                <c:out value="${orderElement.boundElement == null ? 'null' : orderElement.boundElement.shortName}" />
+		            </display:column>
+
+		        </display:table>
+
+                <input type="button" id="closeFieldsOrderDialog" value="Cancel"/>
+
+            </stripes:form>
+        </div>
 
     </stripes:layout-component>
 
