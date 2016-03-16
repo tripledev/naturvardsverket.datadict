@@ -46,89 +46,100 @@
                     <td class="simple_attr_value" style="font-weight:bold"><stripes:link href="${actionBean.conceptUri}"><c:out value="${actionBean.conceptUri}" /></stripes:link>
                     </td>
                 </tr>
-                <tr>
-                    <th scope="row" class="scope-row simple_attr_title">
-                        Preferred label</th>
-                    <td class="simple_attr_value"><c:out value="${actionBean.vocabularyConcept.label}" />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row" class="scope-row simple_attr_title">
-                        Definition</th>
-                     <td class="simple_attr_value"><span style="white-space:pre-wrap"><c:out value="${actionBean.vocabularyConcept.definition}" /></span></td>
-                </tr>
-                <tr>
-                    <th scope="row" class="scope-row simple_attr_title">
-                        Notation</th>
-                    <td class="simple_attr_value"><c:out value="${actionBean.vocabularyConcept.notation}" />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row" class="scope-row simple_attr_title">
-                        Status</th>
-                    <td class="simple_attr_value"><c:out value="${actionBean.vocabularyConcept.status.label}" />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row" class="scope-row simple_attr_title">
-                        Status Modified</th>
-                    <td class="simple_attr_value">
-                        <fmt:formatDate pattern="dd.MM.yyyy" value="${actionBean.vocabularyConcept.statusModified}" />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row" class="scope-row simple_attr_title">
-                        Accepted Date</th>
-                    <td class="simple_attr_value">
-                        <fmt:formatDate pattern="dd.MM.yyyy" value="${actionBean.vocabularyConcept.acceptedDate}" />
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row" class="scope-row simple_attr_title">
-                        Not Accepted Date</th>
-                    <td class="simple_attr_value">
-                        <fmt:formatDate pattern="dd.MM.yyyy" value="${actionBean.vocabularyConcept.notAcceptedDate}" />
-                    </td>
-                </tr>
-                <!-- Data element attributes -->
-                <c:forEach var="elementValues" items="${actionBean.vocabularyConcept.elementAttributes}">
-                    <c:set var="elementMeta" value="${elementValues[0]}"/>
-                    <tr>
-                        <th scope="row" class="scope-row simple_attr_title">${elementMeta.name}</th>
-                        <td class="simple_attr_value">
-                          <ul class="stripedmenu">
-                            <c:forEach var="attr" items="${elementValues}" varStatus="innerLoop">
-                              <li>
-                                <c:choose>
-                                  <c:when test="${attr.relationalElement}">
-                                    <c:choose>
-                                        <c:when test="${not actionBean.vocabularyFolder.workingCopy or attr.datatype eq 'reference'}">
-                                            <a href="${actionBean.conceptViewPrefix}${attr.relatedConceptRelativePath}/view"><c:out value="${attr.relatedConceptIdentifier}" />
-                                            <c:if test="${not empty attr.relatedConceptLabel}">
-                                                (<c:out value="${attr.relatedConceptLabel}" />)
-                                            </c:if></a>
-                                        </c:when>
-                                        <c:otherwise>
-                                          <stripes:link beanclass="eionet.web.action.VocabularyConceptActionBean">
-                                              <stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
-                                              <stripes:param name="vocabularyFolder.identifier" value="${actionBean.vocabularyFolder.identifier}" />
-                                              <stripes:param name="vocabularyFolder.workingCopy" value="${actionBean.vocabularyFolder.workingCopy}" />
-                                              <stripes:param name="vocabularyConcept.identifier" value="${attr.relatedConceptIdentifier}" />
-                                              <c:out value="${attr.relatedConceptLabel}" />
-                                          </stripes:link>
-                                        </c:otherwise>
-                                    </c:choose>
-                                  </c:when>
-                                  <c:otherwise>
-                                      <dd:linkify value="${attr.attributeValue}" /><c:if test="${not empty attr.attributeLanguage}"> [${attr.attributeLanguage}]</c:if>
-                                  </c:otherwise>
-                                </c:choose>
-                              </li>
-                            </c:forEach>
-                            </ul>
-                        </td>
-                    </tr>
+
+                <c:forEach items="${actionBean.conceptFieldsOrder}" var="orderRow" varStatus="orderLoopStatus">
+                    <c:if test="${orderRow.property != null && orderRow.property eq 'LABEL'}">
+                        <tr>
+		                    <th scope="row" class="scope-row simple_attr_title">Preferred label</th>
+		                    <td class="simple_attr_value"><c:out value="${actionBean.vocabularyConcept.label}" /></td>
+		                </tr>
+                    </c:if>
+                    <c:if test="${orderRow.property != null && orderRow.property eq 'DEFINITION'}">
+                        <tr>
+		                    <th scope="row" class="scope-row simple_attr_title">Definition</th>
+                            <td class="simple_attr_value"><span style="white-space:pre-wrap"><c:out value="${actionBean.vocabularyConcept.definition}" /></span></td>
+		                </tr>
+                    </c:if>
+                    <c:if test="${orderRow.property != null && orderRow.property eq 'NOTATION'}">
+                        <tr>
+		                    <th scope="row" class="scope-row simple_attr_title">Notation</th>
+		                    <td class="simple_attr_value"><c:out value="${actionBean.vocabularyConcept.notation}" /></td>
+		                </tr>
+                    </c:if>
+                    <c:if test="${orderRow.property != null && orderRow.property eq 'STATUS'}">
+                        <tr>
+		                    <th scope="row" class="scope-row simple_attr_title">Status</th>
+		                    <td class="simple_attr_value"><c:out value="${actionBean.vocabularyConcept.status.label}" /></td>
+		                </tr>
+                    </c:if>
+                    <c:if test="${orderRow.property != null && orderRow.property eq 'STATUS_MODIFIED'}">
+                        <tr>
+		                    <th scope="row" class="scope-row simple_attr_title">Status Modified</th>
+		                    <td class="simple_attr_value"><fmt:formatDate pattern="dd.MM.yyyy" value="${actionBean.vocabularyConcept.statusModified}" /></td>
+		                </tr>
+                    </c:if>
+                    <c:if test="${orderRow.property != null && orderRow.property eq 'ACCEPTED_DATE'}">
+                        <tr>
+		                    <th scope="row" class="scope-row simple_attr_title">Accepted Date</th>
+		                    <td class="simple_attr_value"><fmt:formatDate pattern="dd.MM.yyyy" value="${actionBean.vocabularyConcept.acceptedDate}" /></td>
+		                </tr>
+                    </c:if>
+                    <c:if test="${orderRow.property != null && orderRow.property eq 'NOT_ACCEPTED_DATE'}">
+                        <tr>
+		                    <th scope="row" class="scope-row simple_attr_title">
+		                        Not Accepted Date</th>
+		                    <td class="simple_attr_value">
+		                        <fmt:formatDate pattern="dd.MM.yyyy" value="${actionBean.vocabularyConcept.notAcceptedDate}" />
+		                    </td>
+		                </tr>
+                    </c:if>
+
+                    <c:if test="${orderRow.property == null && orderRow.boundElement != null}">
+
+                        <c:forEach var="elementValues" items="${actionBean.vocabularyConcept.elementAttributes}">
+		                    <c:set var="elementMeta" value="${elementValues[0]}"/>
+		                    <c:if test="${elementMeta.id == orderRow.boundElement.id}">
+			                    <tr>
+			                        <th scope="row" class="scope-row simple_attr_title">${elementMeta.name}</th>
+			                        <td class="simple_attr_value">
+			                          <ul class="stripedmenu">
+			                            <c:forEach var="attr" items="${elementValues}" varStatus="innerLoop">
+			                              <li>
+			                                <c:choose>
+			                                  <c:when test="${attr.relationalElement}">
+			                                    <c:choose>
+			                                        <c:when test="${not actionBean.vocabularyFolder.workingCopy or attr.datatype eq 'reference'}">
+			                                            <a href="${actionBean.conceptViewPrefix}${attr.relatedConceptRelativePath}/view"><c:out value="${attr.relatedConceptIdentifier}" />
+			                                            <c:if test="${not empty attr.relatedConceptLabel}">
+			                                                (<c:out value="${attr.relatedConceptLabel}" />)
+			                                            </c:if></a>
+			                                        </c:when>
+			                                        <c:otherwise>
+			                                          <stripes:link beanclass="eionet.web.action.VocabularyConceptActionBean">
+			                                              <stripes:param name="vocabularyFolder.folderName" value="${actionBean.vocabularyFolder.folderName}" />
+			                                              <stripes:param name="vocabularyFolder.identifier" value="${actionBean.vocabularyFolder.identifier}" />
+			                                              <stripes:param name="vocabularyFolder.workingCopy" value="${actionBean.vocabularyFolder.workingCopy}" />
+			                                              <stripes:param name="vocabularyConcept.identifier" value="${attr.relatedConceptIdentifier}" />
+			                                              <c:out value="${attr.relatedConceptLabel}" />
+			                                          </stripes:link>
+			                                        </c:otherwise>
+			                                    </c:choose>
+			                                  </c:when>
+			                                  <c:otherwise>
+			                                      <dd:linkify value="${attr.attributeValue}" /><c:if test="${not empty attr.attributeLanguage}"> [${attr.attributeLanguage}]</c:if>
+			                                  </c:otherwise>
+			                                </c:choose>
+			                              </li>
+			                            </c:forEach>
+			                            </ul>
+			                        </td>
+			                    </tr>
+		                    </c:if>
+		                </c:forEach>
+
+                    </c:if>
                 </c:forEach>
+
             </table>
         </div>
 

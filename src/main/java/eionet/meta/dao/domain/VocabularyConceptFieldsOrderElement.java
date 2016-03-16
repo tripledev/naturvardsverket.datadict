@@ -105,7 +105,7 @@ public class VocabularyConceptFieldsOrderElement {
      */
     public static enum Property {
 
-        LABEL("label", "Label"), DEFINITION("definition", "Definition"), NOTATION("notation", "Notation"), STATUS("status", "Status"),
+        LABEL("label", "Preferred label"), DEFINITION("definition", "Definition"), NOTATION("notation", "Notation"), STATUS("status", "Status"),
         STATUS_MODIFIED("statusModified", "Status modified"), ACCEPTED_DATE("acceptedDate", "Accepted date"), NOT_ACCEPTED_DATE("notAcceptedDate",
                 "Not accepted date");
 

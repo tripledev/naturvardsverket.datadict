@@ -37,10 +37,13 @@ import net.sourceforge.stripes.validation.ValidationMethod;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.UriUtils;
+
 import eionet.meta.dao.domain.DataElement;
 import eionet.meta.dao.domain.VocabularyConcept;
+import eionet.meta.dao.domain.VocabularyConceptFieldsOrderElement;
 import eionet.meta.dao.domain.VocabularyFolder;
 import eionet.meta.service.IDataService;
+import eionet.meta.service.IVocabularyConceptFieldsOrderService;
 import eionet.meta.service.IVocabularyService;
 import eionet.meta.service.ServiceException;
 import eionet.meta.service.data.VocabularyConceptFilter;
@@ -80,6 +83,10 @@ public class VocabularyConceptActionBean extends AbstractActionBean {
      */
     @SpringBean
     private IDataService dataService;
+
+    /** */
+    @SpringBean
+    private IVocabularyConceptFieldsOrderService conceptFieldsOrderService;
 
     /**
      * Vocabulary folder.
@@ -155,6 +162,9 @@ public class VocabularyConceptActionBean extends AbstractActionBean {
      * vocabulary set labels excluded manually from the search.
      */
     private List<String> excludedVocSetLabels;
+
+    /** */
+    private List<VocabularyConceptFieldsOrderElement> conceptFieldsOrder;
 
     /**
      * View action.
@@ -859,4 +869,18 @@ public class VocabularyConceptActionBean extends AbstractActionBean {
         }
         return ids;
     }
+
+    /**
+     * @return the conceptFieldsOrder
+     */
+    public List<VocabularyConceptFieldsOrderElement> getConceptFieldsOrder() {
+
+        if (conceptFieldsOrder == null && vocabularyFolder != null) {
+            int vocabularyId = vocabularyFolder.getId();
+            conceptFieldsOrder = conceptFieldsOrderService.getOrderElements(vocabularyId);
+        }
+
+        return conceptFieldsOrder;
+    }
+
 }
