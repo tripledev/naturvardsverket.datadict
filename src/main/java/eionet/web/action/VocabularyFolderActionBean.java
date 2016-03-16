@@ -28,8 +28,10 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +48,6 @@ import net.sourceforge.stripes.integration.spring.SpringBean;
 import net.sourceforge.stripes.validation.ValidationMethod;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.CharEncoding;
 import org.apache.commons.lang.StringUtils;
 
@@ -57,6 +58,7 @@ import eionet.meta.dao.domain.SimpleAttribute;
 import eionet.meta.dao.domain.StandardGenericStatus;
 import eionet.meta.dao.domain.VocabularyConcept;
 import eionet.meta.dao.domain.VocabularyConceptFieldsOrderElement;
+import eionet.meta.dao.domain.VocabularyConceptFieldsOrderElement.Property;
 import eionet.meta.dao.domain.VocabularyFolder;
 import eionet.meta.exports.VocabularyOutputHelper;
 import eionet.meta.exports.json.VocabularyJSONOutputHelper;
@@ -74,6 +76,7 @@ import eionet.meta.service.data.DataElementsResult;
 import eionet.meta.service.data.SiteCodeFilter;
 import eionet.meta.service.data.VocabularyConceptFilter;
 import eionet.meta.service.data.VocabularyConceptResult;
+import eionet.util.Pair;
 import eionet.util.Props;
 import eionet.util.PropsIF;
 import eionet.util.SecurityUtil;
@@ -719,22 +722,23 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
 
         LOGGER.debug("Entered saveConceptFieldsOrder() ...");
 
+        SortedMap<Integer, Pair<Property, Integer>> sortedMap = new TreeMap<Integer, Pair<Property,Integer>>();
         HttpServletRequest httpRequest = getContext().getRequest();
         if (httpRequest != null) {
-            Map paramsMap = httpRequest.getParameterMap();
-            if (paramsMap != null && !paramsMap.isEmpty()) {
-                for (Object object : paramsMap.entrySet()) {
-                    Map.Entry entry = ( Map.Entry) object;
-                    String key = (String) entry.getKey();
-                    if (key.startsWith("pos_")) {
-                        String id = StringUtils.substringAfter(key, "pos_");
-                        String posValue = ArrayUtils.toString(entry.getValue());
-                        String oldPosValue = ArrayUtils.toString(httpRequest.getParameterValues("oldpos_" + id));
-                        System.out.println(key + " = " + posValue + ", oldpos = " + oldPosValue);
-                    }
+
+            Enumeration paramNames = httpRequest.getParameterNames();
+            while (paramNames.hasMoreElements()) {
+                String paramName = paramNames.nextElement().toString();
+                if (paramName.startsWith("pos_")) {
+                    String orderElemId = StringUtils.substringAfter(paramName, "pos_");
+                    Integer position = Integer.valueOf(httpRequest.getParameter(paramName));
+                    sortedMap.put(position, VocabularyConceptFieldsOrderElement.parseId(orderElemId));
                 }
             }
         }
+
+        ArrayList<Pair<Property, Integer>> list = new ArrayList<Pair<Property,Integer>>(sortedMap.values());
+        conceptFieldsOrderService.saveOrder(list, vocabularyFolder.getId());
 
         RedirectResolution resolution = new RedirectResolution(VocabularyFolderActionBean.class, "edit");
         resolution.addParameter("vocabularyFolder.folderName", vocabularyFolder.getFolderName());

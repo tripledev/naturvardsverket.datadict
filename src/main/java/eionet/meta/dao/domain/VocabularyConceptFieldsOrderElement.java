@@ -1,5 +1,8 @@
 package eionet.meta.dao.domain;
 
+import org.apache.commons.lang.StringUtils;
+
+import eionet.util.Pair;
 
 /**
  * A simple DTO for carrying vocabulary concept fields order element (i.e. as in VOCABULARY_CONCEPT_FIELDS_ORDER table).
@@ -60,6 +63,38 @@ public class VocabularyConceptFieldsOrderElement {
      */
     public String getId() {
         return String.format("%s|%s", property == null ? "" : property.name(), boundElement == null ? "" : String.valueOf(boundElement.getId()));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return getId();
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    public static Pair<Property, Integer> parseId(String id) {
+
+        if (id == null || !id.contains("|")) {
+            return null;
+        }
+
+        String propertyName = StringUtils.trimToNull(StringUtils.substringBefore(id, "|"));
+        String boundElemIdStr = StringUtils.trimToNull(StringUtils.substringAfter(id, "|"));
+        if ((propertyName == null && boundElemIdStr == null) || (propertyName != null && boundElemIdStr != null)) {
+            throw new IllegalArgumentException("Illegal id for " + VocabularyConceptFieldsOrderElement.class.getSimpleName() + ": " + id);
+        }
+
+        Property property = propertyName == null ? null : Property.valueOf(propertyName);
+        Integer boundElemId = boundElemIdStr == null ? null : Integer.valueOf(boundElemIdStr);
+        return new Pair<Property, Integer>(property, boundElemId);
     }
 
     /**

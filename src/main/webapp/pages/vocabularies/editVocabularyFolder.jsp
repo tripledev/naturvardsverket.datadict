@@ -192,7 +192,7 @@
 	        function moveRowDown(){
 	            tbl_obj.movedown();
 	        }
-	        function saveConceptFieldsOrder(){
+	        function submitConceptFieldsOrderForm(){
                 tbl_obj.insertNumbers("pos_");
                 document.forms["fieldsOrderForm"].submit();
             }
@@ -756,7 +756,7 @@
 
                 <div>
                     <input type="hidden" name="saveConceptFieldsOrder" value="saveConceptFieldsOrder"/>
-                    <input type="button" id="saveFieldsOrder" value="Save order" onclick="saveConceptFieldsOrder();"/>
+                    <input type="button" id="saveFieldsOrder" value="Save order" onclick="submitConceptFieldsOrderForm();"/>
                     <input type="button" id="closeFieldsOrderDialog" value="Cancel"/>
                 </div>
 
