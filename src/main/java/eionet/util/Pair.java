@@ -86,6 +86,6 @@ public class Pair<L, R> implements Serializable {
      */
     @Override
     public String toString() {
-        return "" + left + " | " + right;
+        return "" + left + "|" + right;
     }
 }

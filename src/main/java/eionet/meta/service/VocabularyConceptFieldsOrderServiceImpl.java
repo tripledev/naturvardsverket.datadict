@@ -27,7 +27,7 @@ import eionet.util.Pair;
 public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConceptFieldsOrderService {
 
     /** */
-    protected static final Logger LOGGER = Logger.getLogger(VocabularyConceptFieldsOrderServiceImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(VocabularyConceptFieldsOrderServiceImpl.class);
 
     /** */
     @Autowired
@@ -43,7 +43,6 @@ public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConce
      * @see eionet.meta.service.IVocabularyConceptFieldsOrderService#getOrderElements(int)
      */
     @Override
-    @Transactional
     public List<VocabularyConceptFieldsOrderElement> getOrder(int vocabularyId) {
 
         SortedMap<Integer, VocabularyConceptFieldsOrderElement> sortedMap = new TreeMap<Integer, VocabularyConceptFieldsOrderElement>();
@@ -51,8 +50,8 @@ public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConce
         List<VocabularyConceptFieldsOrderElement> defaultOrder = getDefaultOrder(vocabularyId);
         List<Pair<Property, Integer>> orderPairs = conceptFieldsOrderDAO.getOrder(vocabularyId);
 
-        LOGGER.trace("Default order for vocabulary " + vocabularyId + ": " + defaultOrder);
-        LOGGER.trace(" Actual order for vocabulary " + vocabularyId + ": " + orderPairs);
+        LOGGER.debug("Default order for vocabulary " + vocabularyId + ": " + defaultOrder);
+        LOGGER.debug(" Actual order for vocabulary " + vocabularyId + ": " + orderPairs);
 
         int i = 900;
         for (VocabularyConceptFieldsOrderElement orderElement : defaultOrder) {
