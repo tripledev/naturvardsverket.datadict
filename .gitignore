@@ -6,11 +6,11 @@ target/
 /.project
 *.cmd
 /.settings
-/rebuild.bat
-/deploy.bat
+/rebuild.*
+/deploy.*
 /local.properties
 Makefile
 /.idea
 /datadict.iml
 /*.bat
-local copy.properties
+
