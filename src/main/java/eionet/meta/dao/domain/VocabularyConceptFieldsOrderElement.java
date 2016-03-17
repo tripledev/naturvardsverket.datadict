@@ -62,7 +62,7 @@ public class VocabularyConceptFieldsOrderElement {
      * @return
      */
     public String getId() {
-        return String.format("%s|%s", property == null ? "null" : property.name(), boundElement == null ? "null" : String.valueOf(boundElement.getId()));
+        return String.format("%s|%s", property == null ? "" : property.name(), boundElement == null ? "" : String.valueOf(boundElement.getId()));
     }
 
     /*
