@@ -78,4 +78,14 @@ public class Pair<L, R> implements Serializable {
     public void setRight(R value) {
         this.right = value;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "" + left + " | " + right;
+    }
 }

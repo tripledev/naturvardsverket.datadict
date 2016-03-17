@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,9 @@ import eionet.util.Pair;
 @Service
 @Transactional
 public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConceptFieldsOrderService {
+
+    /** */
+    protected static final Logger LOGGER = Logger.getLogger(VocabularyConceptFieldsOrderServiceImpl.class);
 
     /** */
     @Autowired
@@ -46,6 +50,9 @@ public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConce
 
         List<VocabularyConceptFieldsOrderElement> defaultOrder = getDefaultOrder(vocabularyId);
         List<Pair<Property, Integer>> orderPairs = conceptFieldsOrderDAO.getOrder(vocabularyId);
+
+        LOGGER.trace("Default order for vocabulary " + vocabularyId + ": " + defaultOrder);
+        LOGGER.trace(" Actual order for vocabulary " + vocabularyId + ": " + orderPairs);
 
         int i = 900;
         for (VocabularyConceptFieldsOrderElement orderElement : defaultOrder) {
