@@ -21,7 +21,6 @@
 package eionet.util.sql;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
@@ -30,9 +29,9 @@ import org.apache.log4j.Logger;
 import eionet.meta.dao.DAOException;
 
 /**
- * 
+ *
  * @author Jaanus Heinlaid
- * 
+ *
  */
 public class SQLTransaction implements Transaction {
 
@@ -52,7 +51,7 @@ public class SQLTransaction implements Transaction {
     private boolean isExternalConnection;
 
     /**
-     * 
+     *
      * @param conn
      */
     private SQLTransaction(Connection conn) {
@@ -145,7 +144,7 @@ public class SQLTransaction implements Transaction {
     }
 
     /**
-     * 
+     *
      */
     public void end() {
         try {
@@ -162,7 +161,7 @@ public class SQLTransaction implements Transaction {
     }
 
     /**
-     * 
+     *
      * @return
      * @throws SQLException
      */
@@ -176,7 +175,7 @@ public class SQLTransaction implements Transaction {
     }
 
     /**
-     * 
+     *
      * @param transaction
      */
     public static void rollback(SQLTransaction transaction) {
@@ -187,47 +186,13 @@ public class SQLTransaction implements Transaction {
     }
 
     /**
-     * 
+     *
      * @param transaction
      */
     public static void end(SQLTransaction transaction) {
 
         if (transaction != null) {
             transaction.end();
-        }
-    }
-    /**
-     */
-    public static void main(String[] args) throws ClassNotFoundException {
-
-        Connection conn = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url =
-                "jdbc:mysql://localhost/DataDict?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&emptyStringsConvertToZero=false&jdbcCompliantTruncation=false";
-            conn = DriverManager.getConnection(url, "dduser", "xxx");
-            conn.setAutoCommit(false);
-            System.out.println("Current auto-commit = " + conn.getAutoCommit());
-            int i = conn.createStatement().executeUpdate("update M_ATTRIBUTE set SHORT_NAME=SHORT_NAME");
-            System.out.println("i = " + i);
-            conn.commit();
-            System.out.println("Now auto-commit = " + conn.getAutoCommit());
-        } catch (SQLException e) {
-            if (conn != null) {
-                try {
-                    conn.rollback();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 }

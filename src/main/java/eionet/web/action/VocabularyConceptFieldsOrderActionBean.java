@@ -97,7 +97,7 @@ public class VocabularyConceptFieldsOrderActionBean extends AbstractActionBean{
     public List<VocabularyConceptFieldsOrderElement> getOrderElements() {
 
         if (orderElements == null) {
-            orderElements = conceptFieldsOrderService.getOrderElements(vocabularyId);
+            orderElements = conceptFieldsOrderService.getOrder(vocabularyId);
         }
         return orderElements;
     }

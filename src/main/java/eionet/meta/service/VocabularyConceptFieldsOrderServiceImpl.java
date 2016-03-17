@@ -40,18 +40,17 @@ public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConce
      */
     @Override
     @Transactional
-    public List<VocabularyConceptFieldsOrderElement> getOrderElements(int vocabularyId) {
+    public List<VocabularyConceptFieldsOrderElement> getOrder(int vocabularyId) {
 
         SortedMap<Integer, VocabularyConceptFieldsOrderElement> sortedMap = new TreeMap<Integer, VocabularyConceptFieldsOrderElement>();
 
         List<VocabularyConceptFieldsOrderElement> defaultOrder = getDefaultOrder(vocabularyId);
-        List<Pair<String, Integer>> orderPairs = conceptFieldsOrderDAO.getOrderElements(vocabularyId);
+        List<Pair<Property, Integer>> orderPairs = conceptFieldsOrderDAO.getOrder(vocabularyId);
 
         int i = 900;
         for (VocabularyConceptFieldsOrderElement orderElement : defaultOrder) {
 
             Property property = orderElement.getProperty();
-            String propertyName = property == null ? null : property.name();
 
             DataElement boundElement = orderElement.getBoundElement();
             Integer boundElemId = boundElement == null ? null : boundElement.getId();
@@ -59,9 +58,9 @@ public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConce
             int position = ++i;
             for (int j = 0; j < orderPairs.size(); j++) {
 
-                Pair<String, Integer> orderPair = orderPairs.get(j);
+                Pair<Property, Integer> orderPair = orderPairs.get(j);
 
-                if ((propertyName != null && propertyName.equals(orderPair.getLeft()))
+                if ((property != null && property.equals(orderPair.getLeft()))
                         || (boundElemId != null && boundElemId == orderPair.getRight())) {
                     position = j + 1;
                     break;

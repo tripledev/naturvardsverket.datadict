@@ -40,6 +40,10 @@ public class VocabularyConceptFieldsOrderDAOImpl extends NamedParameterJdbcDaoSu
             + "INSERT INTO vocabulary_concept_fields_order (VOCABULARY_ID, POSITION, PROPERTY_NAME, BOUND_ELEM_ID) "
             + "VALUES (:vocId, :position, :propName, :boundElemId)";
 
+    /** */
+    private static final String SQL_MOVE_CONCEPT_FIELDS_ORDER = ""
+            + "UPDATE vocabulary_concept_fields_order SET vocabulary_id=:targetVocId WHERE vocabulary_id=:sourceVocId";
+
     /**
      * Data source.
      */
@@ -59,17 +63,19 @@ public class VocabularyConceptFieldsOrderDAOImpl extends NamedParameterJdbcDaoSu
      * @see eionet.meta.dao.IVocabularyConceptFieldsOrderDAO#getOrderElements(int)
      */
     @Override
-    public List<Pair<String, Integer>> getOrderElements(int vocabularyId) {
+    public List<Pair<Property, Integer>> getOrder(int vocabularyId) {
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("vocId", vocabularyId);
 
-        List<Pair<String, Integer>> resultList =
-                getNamedParameterJdbcTemplate().query(SQL_GET_CONCEPT_FIELDS_ORDER, params, new RowMapper<Pair<String, Integer>>() {
+        List<Pair<Property, Integer>> resultList =
+                getNamedParameterJdbcTemplate().query(SQL_GET_CONCEPT_FIELDS_ORDER, params, new RowMapper<Pair<Property, Integer>>() {
                     @Override
-                    public Pair<String, Integer> mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    public Pair<Property, Integer> mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-                        return new Pair<String, Integer>(rs.getString("PROPERTY_NAME"), rs.getInt("BOUND_ELEM_ID"));
+                        Property property = Property.fromName(rs.getString("PROPERTY_NAME"));
+                        Object boundElemId = rs.getObject("BOUND_ELEM_ID");
+                        return new Pair<Property, Integer>(property, boundElemId == null ? null : Integer.valueOf(boundElemId.toString()));
                     }
                 });
 
@@ -104,5 +110,45 @@ public class VocabularyConceptFieldsOrderDAOImpl extends NamedParameterJdbcDaoSu
             paramsArray[i++] = new MapSqlParameterSource(map);
         }
         getNamedParameterJdbcTemplate().batchUpdate(SQL_INSERT_CONCEPT_FIELDS_ORDER, paramsArray);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see eionet.meta.dao.IVocabularyConceptFieldsOrderDAO#deleteOrder(int)
+     */
+    @Override
+    public void deleteOrder(int vocabularyId) {
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("vocId", vocabularyId);
+        getNamedParameterJdbcTemplate().update(SQL_DELETE_CONCEPT_FIELDS_ORDER, params);
+
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see eionet.meta.dao.IVocabularyConceptFieldsOrderDAO#moveOrder(int, int)
+     */
+    @Override
+    public void moveOrder(int sourceVocabularyId, int targetVocabularyId) {
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("targetVocId", targetVocabularyId);
+        params.put("sourceVocId", sourceVocabularyId);
+        getNamedParameterJdbcTemplate().update(SQL_MOVE_CONCEPT_FIELDS_ORDER, params);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see eionet.meta.dao.IVocabularyConceptFieldsOrderDAO#copyOrder(int, int)
+     */
+    @Override
+    public void copyOrder(int sourceVocabularyId, int targetVocabularyId) {
+
+        List<Pair<Property, Integer>> order = getOrder(sourceVocabularyId);
+        saveOrder(order, targetVocabularyId);
     }
 }

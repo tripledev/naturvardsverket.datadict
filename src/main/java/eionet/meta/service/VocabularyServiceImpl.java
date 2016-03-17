@@ -32,11 +32,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import eionet.meta.service.data.VocabularyConceptData;
-import eionet.meta.service.data.VocabularyConceptFilter;
-import eionet.meta.service.data.VocabularyConceptResult;
-import eionet.meta.service.data.VocabularyFilter;
-import eionet.meta.service.data.VocabularyResult;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
@@ -54,6 +49,7 @@ import eionet.meta.dao.IFolderDAO;
 import eionet.meta.dao.IRdfNamespaceDAO;
 import eionet.meta.dao.ISiteCodeDAO;
 import eionet.meta.dao.IVocabularyConceptDAO;
+import eionet.meta.dao.IVocabularyConceptFieldsOrderDAO;
 import eionet.meta.dao.IVocabularyFolderDAO;
 import eionet.meta.dao.domain.DataElement;
 import eionet.meta.dao.domain.Folder;
@@ -63,6 +59,11 @@ import eionet.meta.dao.domain.SiteCodeStatus;
 import eionet.meta.dao.domain.StandardGenericStatus;
 import eionet.meta.dao.domain.VocabularyConcept;
 import eionet.meta.dao.domain.VocabularyFolder;
+import eionet.meta.service.data.VocabularyConceptData;
+import eionet.meta.service.data.VocabularyConceptFilter;
+import eionet.meta.service.data.VocabularyConceptResult;
+import eionet.meta.service.data.VocabularyFilter;
+import eionet.meta.service.data.VocabularyResult;
 import eionet.util.Props;
 import eionet.util.PropsIF;
 import eionet.util.Triple;
@@ -124,6 +125,9 @@ public class VocabularyServiceImpl implements IVocabularyService {
      */
     @Autowired
     private IRdfNamespaceDAO rdfNamespaceDAO;
+
+    @Autowired
+    private IVocabularyConceptFieldsOrderDAO conceptFieldsOrderDAO;
 
     /**
      * {@inheritDoc}
@@ -633,6 +637,9 @@ public class VocabularyServiceImpl implements IVocabularyService {
             // Copy data element relations
             dataElementDAO.copyVocabularyDataElements(vocabularyFolderId, newVocabularyFolderId);
 
+            // Copy vocabulary concept field order.
+            conceptFieldsOrderDAO.copyOrder(vocabularyFolderId, newVocabularyFolderId);
+
             timer.stop();
             LOGGER.debug("Check-out lasted: " + timer.toString());
             return newVocabularyFolderId;
@@ -696,6 +703,8 @@ public class VocabularyServiceImpl implements IVocabularyService {
                 // update ch3 element reference
                 dataElementDAO.moveVocabularySources(originalVocabularyFolderId, vocabularyFolderId);
 
+                // Remove old (i.e. original) vocabulary's concept fields order elements.
+                conceptFieldsOrderDAO.deleteOrder(originalVocabularyFolderId);
             }
 
             // Update original vocabulary folder
@@ -714,6 +723,9 @@ public class VocabularyServiceImpl implements IVocabularyService {
 
                 // Move bound data elements to new vocabulary
                 dataElementDAO.moveVocabularyDataElements(vocabularyFolderId, originalVocabularyFolderId);
+
+                // Move concept fields order elements to new vocabulary.
+                conceptFieldsOrderDAO.moveOrder(vocabularyFolderId, originalVocabularyFolderId);
 
                 List<VocabularyConcept> concepts = vocabularyConceptDAO.getVocabularyConcepts(originalVocabularyFolderId);
                 for (VocabularyConcept concept : concepts) {

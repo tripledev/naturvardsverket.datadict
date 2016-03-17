@@ -18,7 +18,7 @@ public interface IVocabularyConceptFieldsOrderDAO {
      * @param vocabularyId
      * @return
      */
-    List<Pair<String, Integer>> getOrderElements(int vocabularyId);
+    List<Pair<Property, Integer>> getOrder(int vocabularyId);
 
     /**
      * Saves given vocabulary's concept fields order as in the given list of pairs,
@@ -27,4 +27,27 @@ public interface IVocabularyConceptFieldsOrderDAO {
      * @param list
      */
     void saveOrder(List<Pair<Property, Integer>> list, int vocabularyId);
+
+    /**
+     * Delete given vocabulary's concept fields order elements.
+     *
+     * @param vocabularyId
+     */
+    void deleteOrder(int vocabularyId);
+
+    /**
+     * Move given source vocabulary's concept fields order to the given target vocabulary.
+     *
+     * @param sourceVocabularyId
+     * @param targetVocabularyId
+     */
+    void moveOrder(int sourceVocabularyId, int targetVocabularyId);
+
+    /**
+     * Copy given source vocabulary's concept fields order to the given target vocabulary.
+     *
+     * @param sourceVocabularyId
+     * @param targetVocabularyId
+     */
+    void copyOrder(int sourceVocabularyId, int targetVocabularyId);
 }

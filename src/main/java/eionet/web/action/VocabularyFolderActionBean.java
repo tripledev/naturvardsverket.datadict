@@ -1738,7 +1738,7 @@ public class VocabularyFolderActionBean extends AbstractActionBean {
 
         if (conceptFieldsOrder == null && vocabularyFolder != null) {
             int vocabularyId = vocabularyFolder.getId();
-            conceptFieldsOrder = conceptFieldsOrderService.getOrderElements(vocabularyId);
+            conceptFieldsOrder = conceptFieldsOrderService.getOrder(vocabularyId);
         }
 
         return conceptFieldsOrder;

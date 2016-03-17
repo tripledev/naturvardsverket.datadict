@@ -20,7 +20,7 @@ public interface IVocabularyConceptFieldsOrderService {
      * @param vocabularyId
      * @return
      */
-    List<VocabularyConceptFieldsOrderElement> getOrderElements(int vocabularyId);
+    List<VocabularyConceptFieldsOrderElement> getOrder(int vocabularyId);
 
     /**
      * Saves given vocabulary's concept fields order as in the given list of pairs,
