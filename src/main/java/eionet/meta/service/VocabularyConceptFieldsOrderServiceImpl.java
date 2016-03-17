@@ -50,9 +50,6 @@ public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConce
         List<VocabularyConceptFieldsOrderElement> defaultOrder = getDefaultOrder(vocabularyId);
         List<Pair<Property, Integer>> orderPairs = conceptFieldsOrderDAO.getOrder(vocabularyId);
 
-        LOGGER.debug("Default order for vocabulary " + vocabularyId + ": " + defaultOrder);
-        LOGGER.debug(" Actual order for vocabulary " + vocabularyId + ": " + orderPairs);
-
         int i = 900;
         for (VocabularyConceptFieldsOrderElement orderElement : defaultOrder) {
 
@@ -67,7 +64,7 @@ public class VocabularyConceptFieldsOrderServiceImpl implements IVocabularyConce
                 Pair<Property, Integer> orderPair = orderPairs.get(j);
 
                 if ((property != null && property.equals(orderPair.getLeft()))
-                        || (boundElemId != null && boundElemId == orderPair.getRight())) {
+                        || (boundElemId != null && boundElemId.equals(orderPair.getRight()))) {
                     position = j + 1;
                     break;
                 }
