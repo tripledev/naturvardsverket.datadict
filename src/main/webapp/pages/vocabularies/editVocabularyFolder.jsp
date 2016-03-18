@@ -82,7 +82,7 @@
 
                 $('#fieldsOrderDialog').dialog({
                     autoOpen: false,
-                    width: 600,
+                    width: 800,
                     closeOnEscape: false,
                     open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();}
                 });
@@ -179,20 +179,20 @@
 
         <script type="text/javascript">
 
-	        //
-	        // Struff related to the changing of display order of concept fields.
-	        //
+            //
+            // Struff related to the changing of display order of concept fields.
+            //
 
-	        function start() {
-	            tbl_obj=new dynamic_table("tbl");
-	        }
-	        function moveRowUp(){
-	            tbl_obj.moveup();
-	        }
-	        function moveRowDown(){
-	            tbl_obj.movedown();
-	        }
-	        function submitConceptFieldsOrderForm(){
+            function start() {
+                tbl_obj=new dynamic_table("tbl");
+            }
+            function moveRowUp(){
+                tbl_obj.moveup();
+            }
+            function moveRowDown(){
+                tbl_obj.movedown();
+            }
+            function submitConceptFieldsOrderForm(){
                 tbl_obj.insertNumbers("pos_");
                 document.forms["fieldsOrderForm"].submit();
             }
@@ -691,7 +691,7 @@
 
         <%-- The dialog window for changing vocabulary concept fields display order. It is hidden unless activated. --%>
 
-        <div id="fieldsOrderDialog" title="Change concept fields display order">
+        <div id="fieldsOrderDialog" title="Change concept fields display order" style="max-height:800px; overflow:auto;">
 
             <stripes:form id="fieldsOrderForm" beanclass="${actionBean.class.name}" method="post" action="/vocabulary/${actionBean.vocabularyFolder.folderName}/${actionBean.origIdentifier}/saveConceptFieldsOrder">
 
@@ -701,63 +701,65 @@
                 <stripes:param name="vocabularyFolder.workingCopy" value="${actionBean.vocabularyFolder.workingCopy}" />
 
                 <p>
-                    Use the below table to change the display order of the vocabulary's concept fields!
+                    Click on a row in the below table and use Up/Down arrows to change the concept fields display order.<br/>
+                    Click "Save order" to submit your changes or "Cancel" to exit the window without saving changes.
                 </p>
 
-                <div style="float:left; padding-right:5px; vertical-align:middle;">
-                    <input type="button" value="&#8679;" onclick="moveRowUp()" title="Move selected row up."/><br/>
-                    <input type="button" value="&#8681;" onclick="moveRowDown()" title="Move selected row down."/>
-                </div>
-
-                <div>
-                    <table id="tbl" class="datatable" style="width:80%;">
-                        <thead>
-                            <tr>
-                                <th style="text-align:left;padding-right:10px">Field name</th>
-                                <th style="text-align:left;padding-right:10px">Field type</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbl_body">
-                            <c:forEach items="${actionBean.conceptFieldsOrder}" var="orderRow" varStatus="loopStatus">
-                                <tr id="tr${orderRow.id}" onclick="tbl_obj.selectRow(this);" style="${loopStatus.index % 2 != 0 ? 'background-color:#D3D3D3;' : ''}">
-                                    <td>
-                                        <c:choose>
-			                                <c:when test="${orderRow.property != null}">
-			                                    <c:out value="${orderRow.property.label}" />
-			                                </c:when>
-			                                <c:when test="${orderRow.boundElement != null}">
-			                                    <c:out value="${orderRow.boundElement.identifier}" />
-			                                </c:when>
-			                                <c:otherwise>
-			                                    <c:out value="--" />
-			                                </c:otherwise>
-                                        </c:choose>
-                                    </td>
-                                    <td>
-                                        <c:choose>
-			                                <c:when test="${orderRow.property != null}">
-			                                    <c:out value="property" />
-			                                </c:when>
-			                                <c:when test="${orderRow.boundElement != null}">
-			                                    <c:out value="bound element" />
-			                                </c:when>
-			                                <c:otherwise>
-			                                    <c:out value="--" />
-			                                </c:otherwise>
-                                        </c:choose>
-                                        <input type="hidden" name="oldpos_${orderRow.id}" value="${loopStatus.index + 1}"/>
-                                        <input type="hidden" name="pos_${orderRow.id}" value="${loopStatus.index + 1}"/>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div>
+                <div style="padding-left:40px;">
                     <input type="hidden" name="saveConceptFieldsOrder" value="saveConceptFieldsOrder"/>
                     <input type="button" id="saveFieldsOrder" value="Save order" onclick="submitConceptFieldsOrderForm();"/>
                     <input type="button" id="closeFieldsOrderDialog" value="Cancel"/>
+                </div>
+                <div>
+                    <div style="float:left; padding-right:5px; vertical-align:middle;">
+                        <input type="button" value="&#8679;" onclick="moveRowUp()" title="Move selected row up."/><br/>
+                        <input type="button" value="&#8681;" onclick="moveRowDown()" title="Move selected row down."/>
+                    </div>
+
+                    <div>
+                        <table id="tbl" class="datatable" style="width:80%;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:left;padding-right:10px">Field name</th>
+                                    <th style="text-align:left;padding-right:10px">Field type</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl_body">
+                                <c:forEach items="${actionBean.conceptFieldsOrder}" var="orderRow" varStatus="loopStatus">
+                                    <tr id="tr${orderRow.id}" onclick="tbl_obj.selectRow(this);" style="${loopStatus.index % 2 != 0 ? 'background-color:#D3D3D3;' : ''}">
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${orderRow.property != null}">
+                                                    <c:out value="${orderRow.property.label}" />
+                                                </c:when>
+                                                <c:when test="${orderRow.boundElement != null}">
+                                                    <c:out value="${orderRow.boundElement.identifier}" />
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:out value="--" />
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${orderRow.property != null}">
+                                                    <c:out value="property" />
+                                                </c:when>
+                                                <c:when test="${orderRow.boundElement != null}">
+                                                    <c:out value="bound element" />
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:out value="--" />
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <input type="hidden" name="oldpos_${orderRow.id}" value="${loopStatus.index + 1}"/>
+                                            <input type="hidden" name="pos_${orderRow.id}" value="${loopStatus.index + 1}"/>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </stripes:form>
