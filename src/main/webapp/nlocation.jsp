@@ -12,29 +12,29 @@ String appName = ctx.getInitParameter("application-name");
         DDUser _user = SecurityUtil.getUser(request);
         if (_user!=null){
             %>
-            <a id="logoutlink" href="<%=request.getContextPath()%>/logout.jsp" title="Logout">Logout (<%=_user.getUserName()%>)</a><%
+            <a id="logoutlink" href="<%=request.getContextPath()%>/logout.jsp" title="Logout">Logga ut (<%=_user.getUserName()%>)</a><%
         }
         else{
             %>
-            <a id="loginlink" href="<%=SecurityUtil.getLoginURL(request)%>" title="Login">Login</a><%
+            <a id="loginlink" href="<%=SecurityUtil.getLoginURL(request)%>" title="Login">Logga in</a><%
         }
 
         String helpScreen = request.getParameter("helpscreen");
         if (helpScreen!=null){
             %>
-            <a id="pagehelplink" title="Get help on this page" href="<%=request.getContextPath()%>/help.jsp?screen=<%=helpScreen%>&amp;area=pagehelp" onclick="pop(this.href);return false;"><span>Page help</span></a><%
+            <a id="pagehelplink" title="Get help on this page" href="<%=request.getContextPath()%>/help.jsp?screen=<%=helpScreen%>&amp;area=pagehelp" onclick="pop(this.href);return false;"><span>Hj&auml;lp</span></a><%
         }
         %>
         <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
         <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
-        <a id="acronymlink" href="http://www.eionet.europa.eu/acronyms" title="Look up acronyms"><span>Acronyms</span></a>
+        <a id="acronymlink" href="http://www.miljodatasamverkan.se/datadict/about.action" title="Look up acronyms"><span>F&ouml;rkortningar</span></a>
         <form action="http://google.com/search" method="get">
           <div id="freesrchform">
-            <label for="freesrchfld">Search</label>
+            <label for="freesrchfld">S&ouml;k</label>
             <input type="text" id="freesrchfld" name="q"
-             onfocus="if(this.value=='Search the site')this.value='';"
-             onblur="if(this.value=='')this.value='Search the site';"
-             value="Search the site"/>
+             onfocus="if(this.value=='S&ouml;k p&aring; sidan')this.value='';"
+             onblur="if(this.value=='')this.value='S&ouml;k p&aring; sidan';"
+             value="S&ouml;k p&aring; sidan"/>
              <input type="hidden" name="sitesearch" value="<%=Props.getProperty(PropsIF.JSP_URL_PREFIX)%>" />
             <input id="freesrchbtn" type="image" src="<%=request.getContextPath()%>/images/button_go.gif" alt="Go"/>
           </div>
@@ -51,8 +51,8 @@ String appName = ctx.getInitParameter("application-name");
     <%@ include file="dropdownmenus.txt" %>
 </div>
 <div class="breadcrumbtrail">
-    <div class="breadcrumbhead">You are here:</div>
-    <div class="breadcrumbitem eionetaccronym"><a href="http://www.eionet.europa.eu">Eionet</a></div>
+    <div class="breadcrumbhead">Du är här:</div>
+    <div class="breadcrumbitem eionetaccronym"><a href="http://www.miljodatasamverkan.se">Miljödatasamverkan</a></div>
     <%
     String contextName = request.getParameter("context_name");
     String contextPath = request.getParameter("context_path");

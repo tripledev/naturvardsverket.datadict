@@ -41,30 +41,30 @@
             <div id="container">
                 <div id="toolribbon">
                     <div id="lefttools">
-                        <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
+                        <a id="eealink" href="http://www.miljodatasamverkan.se/datadict/">Milj&ouml;datasamverkan</a>
                         <a id="ewlink" href="http://www.ewindows.eu.org/">EnviroWindows</a>
                     </div>
                     <div id="righttools">
 
                         <c:choose>
                             <c:when test="${empty actionBean.user}">
-                                <stripes:link id="loginlink" href="${actionBean.loginUrl}" title="Login">Login</stripes:link>
+                                <stripes:link id="loginlink" href="${actionBean.loginUrl}" title="Login">Logga in</stripes:link>
                             </c:when>
                             <c:otherwise>
-                                <a id="logoutlink" href="${pageContext.request.contextPath}/logout.jsp" title="Logout">Logout ${actionBean.user.userName}</a>
+                                <a id="logoutlink" href="${pageContext.request.contextPath}/logout.jsp" title="Logout">Logga ut ${actionBean.user.userName}</a>
                             </c:otherwise>
                         </c:choose>
 
                         <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
                         <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
-                        <a id="acronymlink" href="about.action" title="About ${initParam.appDispName}"><span>About</span></a>
+                        <a id="acronymlink" href="about.action" title="F&ouml;rkortningar som anv&auml;nds i ${initParam.appDispName}"><span>F&ouml;rkortningar</span></a>
                         <form action="http://google.com/search" method="get">
                           <div id="freesrchform">
-                            <label for="freesrchfld">Search</label>
+                            <label for="freesrchfld">S&ouml;k</label>
                             <input type="text" id="freesrchfld" name="q"
-                             onfocus="if(this.value=='Search the site')this.value='';"
-                             onblur="if(this.value=='')this.value='Search the site';"
-                             value="Search the site"/>
+                             onfocus="if(this.value=='S&ouml;k p&aring; sidan')this.value='';"
+                             onblur="if(this.value=='')this.value='S&ouml;k p&aring; sidan';"
+                             value="S&ouml;k p&aring; sidan"/>
                              <input type="hidden" name="sitesearch" value="${actionBean.sitePrefix}" />
                             <input id="freesrchbtn" type="image" src="<c:url value="/images/button_go.gif"/>" alt="Go"/>
                           </div>
@@ -74,9 +74,10 @@
 
                 <div id="pagehead">
                     <a href="/"><img src="${pageContext.request.contextPath}/images/eea-print-logo.gif" alt="Logo" id="logo" /></a>
-                    <div id="networktitle">Eionet</div>
-                    <div id="sitetitle">${initParam.appDispName}</div>
-                    <div id="sitetagline">This service is part of Reportnet</div>
+                    <div id="networktitle">Milj&ouml;datasamverkan</div>
+                    <div id="sitetitle">Kodlistor (BETA)</div>
+                    <div id="sitetitle">Based on EEA&#39;s Data Dictionary 2.4.2</div>
+                    <div id="sitetagline">Denna sida är en del av Miljödatasamverkan</div>
                 </div> <!-- pagehead -->
 
                 <div id="menuribbon">
@@ -84,9 +85,9 @@
                 </div>
 
                 <div class="breadcrumbtrail">
-                    <div class="breadcrumbhead">You are here:</div>
+                    <div class="breadcrumbhead">Du &auml;r h&auml;r:</div>
                     <div class="breadcrumbitem eionetaccronym">
-                        <a href="http://www.eionet.europa.eu">Eionet</a>
+                        <a href="http://www.miljodatasamverkan.se">Milj&ouml;datasamverkan</a>
                     </div>
                     <c:choose>
                         <c:when test="${empty pageTitle}">
@@ -177,10 +178,9 @@
                     --%>
                 </div>
                 <div id="pagefoot" style="max-width: none;">
-                    <c:set var="feedbackMail" value="mailto:helpdesk@eionet.europa.eu?subject=Feedback from the ${initParam.appDispName} website"/>
-                    <p><a href="mailto:cr@eionet.europa.eu">E-mail</a> | <a href="${ddfn:urlEncode(feedbackMail)}">Feedback</a></p>
+                    <c:set var="feedbackMail" value="mailto:support@miljodatasamverkan.se?subject=Feedback rörande Miljodatasamverkan.se"/>
+                    <p><a href="mailto:support@miljodatasamverkan.se?subject=Feedback rörande Miljodatasamverkan.se">E-mail</a> | <a href="${ddfn:urlEncode(feedbackMail)}">Feedback</a></p>
                     <p><a href="http://www.eea.europa.eu/"><b>European Environment Agency</b></a>
-                    <br/>Kgs. Nytorv 6, DK-1050 Copenhagen K, Denmark - Phone: +45 3336 7100</p>
                 </div>
             </div>
         </body>

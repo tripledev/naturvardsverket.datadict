@@ -14,11 +14,11 @@
             </ul>
         </div>
 
-        <h1>Tables from latest versions of datasets in any status</h1>
+        <h1>Senaste versioner av tabeller, oavsett status (draft etc.)</h1>
 
         <p class="advise-msg">
-            Note: Tables from datasets NOT in
-            <em>Recorded</em> or <em>Released</em> status are inaccessible for anonymous users.
+            Viktigt: Tabeller fr&aring;n dataset som inte har 
+            <em>Recorded</em> eller <em>Released</em> status &auml;r otillg&auml;ngliga f&ouml;r anonyma anv&auml;ndare.
         </p>
 
         <display:table name="${actionBean.dataSetTables}" class="sortable" id="item" sort="list"

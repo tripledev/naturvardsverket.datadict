@@ -462,15 +462,15 @@
                         <h1>Working copies of dataset definitions</h1><%
                     }
                     else if (!restore){
-                        String strAllOrLatest = isIncludeHistoricVersions ? "All " : "Latest";
+                        String strAllOrLatest = isIncludeHistoricVersions ? "Alla " : "Senaste";
                         %>
-                        <h1><%=strAllOrLatest%> versions of datasets in any status</h1><%
+                        <h1><%=strAllOrLatest%> versioner av dataset, oavsett status (draft etc.)</h1><%
                     }
                     else{%>
                         <h1>Restore datasets</h1><%
                     }
             if (user == null) { %>
-                <p class="advise-msg">Note: Datasets NOT in <em>Recorded</em> or <em>Released</em> status are inaccessible for anonymous users.</p><%
+                <p class="advise-msg">Viktigt: Dataset som inte har <em>Recorded</em> eller <em>Released</em> status &auml;r otillg&auml;ngliga f&ouml;r anonyma anv&auml;ndare.</p><%
             }
             %>
             <form id="form1" method="post" action="datasets.jsp" onsubmit="setLocation()">
@@ -484,11 +484,11 @@
                         // see if this is a search or just listing all the datasets
                         if (Util.isEmpty(request.getParameter("search_precision"))){ // listing all the datasets
                             %>
-                            <b>No dataset definitions were found!</b><%
+                            <b>Inga dataset finns tillg&auml;ngliga</b><%
                         }
                         else{ // a search
                             %>
-                            <b>No dataset definitions matching the search criteria were found!</b><%
+                            <b>Inga dataset som &ouml;verensstämmer med s&ouml;kkriterierna hittades!</b><%
                         }
                         %>
 

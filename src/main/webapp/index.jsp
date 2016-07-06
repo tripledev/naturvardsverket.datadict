@@ -94,7 +94,7 @@ finally{
                         <div id="outerframe">
                             <jsp:include page="/releasedItems.action" flush="true" />
                             <div>
-                                <h2>Documentation</h2>
+                                <h2>Dokumenation</h2>
                                 <%
                                 DocPageDTO docs = DocumentationService.getInstance().view(null, null);
                                 if (docs != null && docs.getDocs() != null && docs.getDocs().size() > 0) {
@@ -108,7 +108,7 @@ finally{
                                     </ul>
                                     <%
                                 } else{
-                                    %><p>No documentation currently available in the database.</p><%
+                                    %><p>Ingen dokumentation finns tillg&auml;nglig</p><%
                                 }
                                 %>
                             </div>

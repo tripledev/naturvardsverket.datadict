@@ -2,7 +2,7 @@
 
 <%@ include file="/pages/common/taglibs.jsp"%>
 
-<h1>Latest released definitions</h1>
+<h1>Senanste &auml;ndringar</h1>
 
 <c:url var="datasetIconUrl" value="/images/tar.png" />
     <c:url var="vocabularyIconUrl" value="/images/txt.png" />

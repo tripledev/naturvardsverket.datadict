@@ -114,10 +114,10 @@
                 </ul>
             </div>
 
-        <h1>Browse vocabularies</h1>
+        <h1>Bl&auml;ddra bland kodlistor</h1>
 
         <p class="advise-msg">
-            Note: Unauthenticated users can only see vocabularies in <em>Released</em> and <em>Public Draft</em> statuses.
+            Viktigt: Anonyma anv&auml;ndare kan bara se kodlistor med status <em>Released</em> eller <em>Public Draft</em>.
         </p>
 
         <c:url var="expandIcon" value="/images/expand.png" />

@@ -1,7 +1,7 @@
 <%@page contentType="text/html;charset=UTF-8"%>
 <%@ include file="/pages/common/taglibs.jsp"%>
 
-<stripes:layout-render name="/pages/common/template.jsp" pageTitle="Documentation">
+<stripes:layout-render name="/pages/common/template.jsp" pageTitle="Dokumentation">
     <stripes:layout-component name="contents">
 
             <c:if test='${ddfn:userHasPermission(actionBean.user.userName, "/documentation", "u")}'>
@@ -159,7 +159,7 @@
 							${actionBean.pageObject.content}
 						</c:when>
                         <c:otherwise>
-                        	<h1>Documentation</h1>
+                        	<h1>Dokumentation</h1>
 		   					<ul>
 			   					<c:forEach var="doc" items="${actionBean.pageObject.docs}">
 									<li>
