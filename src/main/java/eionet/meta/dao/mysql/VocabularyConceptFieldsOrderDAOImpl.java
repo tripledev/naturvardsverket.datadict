@@ -30,19 +30,19 @@ public class VocabularyConceptFieldsOrderDAOImpl extends NamedParameterJdbcDaoSu
 
     /** */
     private static final String SQL_GET_CONCEPT_FIELDS_ORDER = ""
-            + "SELECT * FROM vocabulary_concept_fields_order WHERE vocabulary_id=:vocId ORDER BY POSITION";
+            + "SELECT * FROM VOCABULARY_CONCEPT_FIELDS_ORDER WHERE vocabulary_id=:vocId ORDER BY POSITION";
 
     /** */
     private static final String SQL_DELETE_CONCEPT_FIELDS_ORDER = "" + "DELETE FROM vocabulary_concept_fields_order WHERE vocabulary_id=:vocId";
 
     /** */
     private static final String SQL_INSERT_CONCEPT_FIELDS_ORDER = ""
-            + "INSERT INTO vocabulary_concept_fields_order (VOCABULARY_ID, POSITION, PROPERTY_NAME, BOUND_ELEM_ID) "
+            + "INSERT INTO VOCABULARY_CONCEPT_FIELDS_ORDER (VOCABULARY_ID, POSITION, PROPERTY_NAME, BOUND_ELEM_ID) "
             + "VALUES (:vocId, :position, :propName, :boundElemId)";
 
     /** */
     private static final String SQL_MOVE_CONCEPT_FIELDS_ORDER = ""
-            + "UPDATE vocabulary_concept_fields_order SET vocabulary_id=:targetVocId WHERE vocabulary_id=:sourceVocId";
+            + "UPDATE VOCABULARY_CONCEPT_FIELDS_ORDER SET vocabulary_id=:targetVocId WHERE vocabulary_id=:sourceVocId";
 
     /**
      * Data source.

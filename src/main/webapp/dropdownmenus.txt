@@ -1,7 +1,7 @@
 <!-- Last updated: 2014-10-22T07:11:32Z
      To update download http://www.eionet.europa.eu/dropdownmenus.txt -->
         <ul id="dropdowns">
-         <li><a href="http://www.eionet.europa.eu/menuservices">Tjänster</a>
+         <li><a href="http://www.eionet.europa.eu/menuservices">Tj&auml;nster</a>
           <ul>
            <li><a href="http://www.eionet.europa.eu/helpdesk">Helpdesk</a></li>
            <li><a href="http://forum.eionet.europa.eu/">Forum</a></li>
